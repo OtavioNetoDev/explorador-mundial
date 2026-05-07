@@ -1,952 +1,1011 @@
-// Base de dados de perguntas
-const INITIAL_QUESTIONS = {
-    'América do Norte': [
-        {
-            location: 'Pearl Harbor, Havaí',
-            coords: { x: 15, y: 45 },
-            country: 'Estados Unidos',
-            question: 'Qual evento histórico marcou Pearl Harbor em 7 de dezembro de 1941?',
-            options: [
-                'Ataque japonês que levou os EUA à Segunda Guerra Mundial',
-                'Tratado de paz do Pacífico',
-                'Descoberta das ilhas havaianas',
-                'Independência do Havaí'
-            ],
-            correct: 0,
-            fact: 'O ataque surpresa japonês a Pearl Harbor resultou em mais de 2.400 mortes americanas e levou os Estados Unidos a entrar na Segunda Guerra Mundial.'
-        },
-        {
-            location: 'Nova York, EUA',
-            coords: { x: 25, y: 35 },
-            country: 'Estados Unidos',
-            question: 'Qual monumento icônico foi um presente da França aos EUA em 1886?',
-            options: [
-                'Empire State Building',
-                'Estátua da Liberdade',
-                'Ponte do Brooklyn',
-                'Lincoln Memorial'
-            ],
-            correct: 1,
-            fact: 'A Estátua da Liberdade foi presente da França para celebrar a amizade entre os dois países e a independência americana.'
-        },
-        {
-            location: 'Washington D.C., EUA',
-            coords: { x: 26, y: 37 },
-            country: 'Estados Unidos',
-            question: 'Em que cidade está localizada a Casa Branca?',
-            options: [
-                'Nova York',
-                'Los Angeles',
-                'Washington D.C.',
-                'Chicago'
-            ],
-            correct: 2,
-            fact: 'Washington D.C. é a capital dos Estados Unidos e sede do governo federal desde 1800.'
-        },
-        {
-            location: 'Cidade do México, México',
-            coords: { x: 22, y: 48 },
-            country: 'México',
-            question: 'Qual civilização antiga construiu a pirâmide de Teotihuacan no México?',
-            options: [
-                'Astecas',
-                'Maias',
-                'Teotihuacanos',
-                'Olmecas'
-            ],
-            correct: 2,
-            fact: 'Teotihuacan foi uma das maiores cidades da América pré-colombiana, com a famosa Pirâmide do Sol construída por volta de 200 d.C.'
-        },
-        {
-            location: 'Havana, Cuba',
-            coords: { x: 27, y: 46 },
-            country: 'Cuba',
-            question: 'Em que ano ocorreu a Revolução Cubana liderada por Fidel Castro?',
-            options: [
-                '1945',
-                '1959',
-                '1965',
-                '1970'
-            ],
-            correct: 1,
-            fact: 'A Revolução Cubana de 1959 derrubou o ditador Fulgencio Batista e estabeleceu um governo socialista liderado por Fidel Castro.'
-        }
-    ],
-    'América do Sul': [
-        {
-            location: 'Machu Picchu, Peru',
-            coords: { x: 28, y: 70 },
-            country: 'Peru',
-            question: 'Qual civilização construiu a cidade de Machu Picchu?',
-            options: [
-                'Astecas',
-                'Maias',
-                'Incas',
-                'Olmecas'
-            ],
-            correct: 2,
-            fact: 'Machu Picchu foi construída pelos Incas no século XV e é considerada uma das Sete Maravilhas do Mundo Moderno.'
-        },
-        {
-            location: 'Rio de Janeiro, Brasil',
-            coords: { x: 38, y: 72 },
-            country: 'Brasil',
-            question: 'Em que ano o Brasil se tornou independente de Portugal?',
-            options: [
-                '1500',
-                '1822',
-                '1889',
-                '1900'
-            ],
-            correct: 1,
-            fact: 'Dom Pedro I proclamou a independência do Brasil em 7 de setembro de 1822 às margens do rio Ipiranga.'
-        },
-        {
-            location: 'Buenos Aires, Argentina',
-            coords: { x: 32, y: 82 },
-            country: 'Argentina',
-            question: 'Qual é a capital da Argentina?',
-            options: [
-                'São Paulo',
-                'Buenos Aires',
-                'Montevidéu',
-                'Santiago'
-            ],
-            correct: 1,
-            fact: 'Buenos Aires é a capital da Argentina desde 1880 e é conhecida como a "Paris da América do Sul".'
-        },
-        {
-            location: 'Ilhas Galápagos, Equador',
-            coords: { x: 23, y: 62 },
-            country: 'Equador',
-            question: 'Qual cientista desenvolveu a teoria da evolução estudando as Ilhas Galápagos?',
-            options: [
-                'Isaac Newton',
-                'Albert Einstein',
-                'Charles Darwin',
-                'Galileu Galilei'
-            ],
-            correct: 2,
-            fact: 'Charles Darwin visitou as Galápagos em 1835 e suas observações sobre as espécies locais foram fundamentais para sua teoria da evolução.'
-        }
-    ],
-    'Europa': [
-        {
-            location: 'Paris, França',
-            coords: { x: 50, y: 30 },
-            country: 'França',
-            question: 'Que evento histórico começou em Paris em 14 de julho de 1789?',
-            options: [
-                'Primeira Guerra Mundial',
-                'Revolução Francesa',
-                'Renascimento',
-                'Iluminismo'
-            ],
-            correct: 1,
-            fact: 'A Queda da Bastilha marcou o início da Revolução Francesa, transformando a França e inspirando revoluções pelo mundo.'
-        },
-        {
-            location: 'Berlim, Alemanha',
-            coords: { x: 52, y: 28 },
-            country: 'Alemanha',
-            question: 'Em que ano caiu o Muro de Berlim?',
-            options: [
-                '1961',
-                '1989',
-                '1945',
-                '1991'
-            ],
-            correct: 1,
-            fact: 'A queda do Muro de Berlim em 9 de novembro de 1989 simbolizou o fim da Guerra Fria e a reunificação da Alemanha.'
-        },
-        {
-            location: 'Londres, Inglaterra',
-            coords: { x: 49, y: 27 },
-            country: 'Reino Unido',
-            question: 'Qual é o famoso relógio localizado em Londres?',
-            options: [
-                'Big Ben',
-                'Torre Eiffel',
-                'Coliseu',
-                'Partenon'
-            ],
-            correct: 0,
-            fact: 'Big Ben é na verdade o nome do sino dentro da torre do relógio do Palácio de Westminster, mas o nome se tornou sinônimo de toda a torre.'
-        },
-        {
-            location: 'Roma, Itália',
-            coords: { x: 52, y: 34 },
-            country: 'Itália',
-            question: 'Qual famoso anfiteatro romano foi construído no século I d.C.?',
-            options: [
-                'Partenon',
-                'Acrópole',
-                'Coliseu',
-                'Circus Maximus'
-            ],
-            correct: 2,
-            fact: 'O Coliseu Romano podia abrigar entre 50.000 e 80.000 espectadores e era usado para lutas de gladiadores e eventos públicos.'
-        },
-        {
-            location: 'Atenas, Grécia',
-            coords: { x: 55, y: 36 },
-            country: 'Grécia',
-            question: 'Qual templo grego dedicado à deusa Atena está localizado na Acrópole?',
-            options: [
-                'Partenon',
-                'Coliseu',
-                'Panteão',
-                'Templo de Zeus'
-            ],
-            correct: 0,
-            fact: 'O Partenon foi construído entre 447 e 432 a.C. e é um dos símbolos mais importantes da Grécia Antiga e da democracia.'
-        },
-        {
-            location: 'Moscou, Rússia',
-            coords: { x: 60, y: 22 },
-            country: 'Rússia',
-            question: 'Qual é a famosa praça no centro de Moscou, ao lado do Kremlin?',
-            options: [
-                'Praça Vermelha',
-                'Times Square',
-                'Trafalgar Square',
-                'Praça Tiananmen'
-            ],
-            correct: 0,
-            fact: 'A Praça Vermelha tem sido o cenário de muitos eventos históricos importantes e abriga o Mausoléu de Lênin e a Catedral de São Basílio.'
-        }
-    ],
-    'África': [
-        {
-            location: 'Cairo, Egito',
-            coords: { x: 54, y: 48 },
-            country: 'Egito',
-            question: 'Qual estrutura antiga encontra-se em Gizé, perto do Cairo?',
-            options: [
-                'Coliseu',
-                'Muralha da China',
-                'Pirâmides e a Esfinge',
-                'Stonehenge'
-            ],
-            correct: 2,
-            fact: 'As Pirâmides de Gizé são as únicas das Sete Maravilhas do Mundo Antigo que ainda existem, construídas há mais de 4.500 anos.'
-        },
-        {
-            location: 'Cidade do Cabo, África do Sul',
-            coords: { x: 54, y: 82 },
-            country: 'África do Sul',
-            question: 'Qual líder anti-apartheid foi presidente da África do Sul de 1994 a 1999?',
-            options: [
-                'Desmond Tutu',
-                'Nelson Mandela',
-                'F.W. de Klerk',
-                'Thabo Mbeki'
-            ],
-            correct: 1,
-            fact: 'Nelson Mandela passou 27 anos preso por lutar contra o apartheid e se tornou o primeiro presidente negro da África do Sul em 1994.'
-        },
-        {
-            location: 'Marrakech, Marrocos',
-            coords: { x: 48, y: 46 },
-            country: 'Marrocos',
-            question: 'Em que continente está localizado o Marrocos?',
-            options: [
-                'Ásia',
-                'Europa',
-                'África',
-                'América do Sul'
-            ],
-            correct: 2,
-            fact: 'O Marrocos está no norte da África e é separado da Europa pelo Estreito de Gibraltar, que tem apenas 14 km de largura.'
-        }
-    ],
-    'Ásia': [
-        {
-            location: 'Hiroshima, Japão',
-            coords: { x: 80, y: 42 },
-            country: 'Japão',
-            question: 'Que evento trágico ocorreu em Hiroshima em 6 de agosto de 1945?',
-            options: [
-                'Grande terremoto',
-                'Tsunami devastador',
-                'Primeira bomba atômica em guerra',
-                'Erupção vulcânica'
-            ],
-            correct: 2,
-            fact: 'Hiroshima foi a primeira cidade a sofrer um ataque nuclear na história, seguida por Nagasaki três dias depois, levando ao fim da Segunda Guerra Mundial.'
-        },
-        {
-            location: 'Grande Muralha, China',
-            coords: { x: 72, y: 35 },
-            country: 'China',
-            question: 'Aproximadamente qual o comprimento da Grande Muralha da China?',
-            options: [
-                '2.000 km',
-                '6.000 km',
-                '21.000 km',
-                '50.000 km'
-            ],
-            correct: 2,
-            fact: 'A Grande Muralha tem mais de 21.000 km de extensão total, construída ao longo de séculos para proteger a China de invasões.'
-        },
-        {
-            location: 'Pequim, China',
-            coords: { x: 73, y: 33 },
-            country: 'China',
-            question: 'Qual é a capital da China?',
-            options: [
-                'Xangai',
-                'Hong Kong',
-                'Pequim',
-                'Guangzhou'
-            ],
-            correct: 2,
-            fact: 'Pequim é a capital da China há mais de 800 anos e abriga a histórica Cidade Proibida, residência de 24 imperadores.'
-        },
-        {
-            location: 'Taj Mahal, Índia',
-            coords: { x: 68, y: 47 },
-            country: 'Índia',
-            question: 'O Taj Mahal foi construído como um monumento para quem?',
-            options: [
-                'Um imperador',
-                'Um deus hindu',
-                'A esposa do imperador',
-                'Um templo budista'
-            ],
-            correct: 2,
-            fact: 'O Taj Mahal foi construído pelo imperador Shah Jahan em memória de sua esposa Mumtaz Mahal, que morreu em 1631.'
-        },
-        {
-            location: 'Angkor Wat, Camboja',
-            coords: { x: 75, y: 52 },
-            country: 'Camboja',
-            question: 'Angkor Wat é o maior monumento religioso do mundo. Qual religião ele representa?',
-            options: [
-                'Budismo',
-                'Hinduísmo (depois Budismo)',
-                'Islamismo',
-                'Cristianismo'
-            ],
-            correct: 1,
-            fact: 'Angkor Wat foi originalmente construído como um templo hindu no século XII, mas gradualmente se transformou em um templo budista.'
-        },
-        {
-            location: 'Jerusalém, Israel',
-            coords: { x: 57, y: 47 },
-            country: 'Israel',
-            question: 'Jerusalém é considerada cidade sagrada para quantas religiões?',
-            options: [
-                'Uma',
-                'Duas',
-                'Três',
-                'Quatro'
-            ],
-            correct: 2,
-            fact: 'Jerusalém é sagrada para o Judaísmo, Cristianismo e Islamismo, tornando-a uma das cidades mais importantes da história religiosa.'
-        }
-    ],
-    'Oceania': [
-        {
-            location: 'Sydney, Austrália',
-            coords: { x: 85, y: 80 },
-            country: 'Austrália',
-            question: 'Qual povo habitava a Austrália há mais de 65.000 anos?',
-            options: [
-                'Maoris',
-                'Aborígenes',
-                'Polinésios',
-                'Melanésios'
-            ],
-            correct: 1,
-            fact: 'Os aborígenes australianos possuem uma das culturas contínuas mais antigas do mundo, habitando o continente há pelo menos 65.000 anos.'
-        },
-        {
-            location: 'Auckland, Nova Zelândia',
-            coords: { x: 92, y: 84 },
-            country: 'Nova Zelândia',
-            question: 'Qual é o povo nativo da Nova Zelândia?',
-            options: [
-                'Aborígenes',
-                'Maoris',
-                'Samoanos',
-                'Taitianos'
-            ],
-            correct: 1,
-            fact: 'Os Maoris chegaram à Nova Zelândia por volta do ano 1300 d.C. vindos da Polinésia e desenvolveram uma cultura rica e única.'
-        },
-        {
-            location: 'Ilha de Páscoa, Chile',
-            coords: { x: 20, y: 78 },
-            country: 'Chile (Oceania)',
-            question: 'Que famosas estátuas gigantes são encontradas na Ilha de Páscoa?',
-            options: [
-                'Moais',
-                'Pirâmides',
-                'Esfinges',
-                'Totens'
-            ],
-            correct: 0,
-            fact: 'Os Moais são estátuas monolíticas criadas pelo povo Rapa Nui entre 1400 e 1650 d.C. Existem quase 1.000 estátuas na ilha.'
-        }
-    ]
-};
+/* ══════════════════════════════════════════════════
+   GEO-HISTÓRIA v3 · game.js
+   - Modo Professor: clique no mapa + formulário
+   - Perguntas salvas em localStorage
+   - Quiz de 4 opções geograficamente fiel
+   - Banco interno com perguntas por coordenada estrita
+══════════════════════════════════════════════════ */
+'use strict';
 
-// Cores dos jogadores
-const PLAYER_COLORS = [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
-    '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B739', '#52B788',
-    '#E63946', '#457B9D', '#F4A261', '#2A9D8F', '#E76F51',
-    '#8338EC', '#FF006E', '#FB5607', '#FFBE0B', '#3A86FF'
+/* ─────────────────────────────────────────────────
+   CALIBRAÇÃO DO MAPA (imagem 1656 × 950 px)
+   Área útil (excluindo bordas de label):
+     left=55  right=1636  top=15  bottom=930
+───────────────────────────────────────────────── */
+const MAP_CAL = { imgW:1656, imgH:950, left:55, right:1636, top:15, bottom:930 };
+MAP_CAL.mW = MAP_CAL.right - MAP_CAL.left;   // 1581
+MAP_CAL.mH = MAP_CAL.bottom - MAP_CAL.top;   // 915
+
+/** Converte lat/lon para % do contêiner da imagem */
+function toPercent(lat, lon) {
+  const px = MAP_CAL.left + (lon + 180) * (MAP_CAL.mW / 360);
+  const py = MAP_CAL.top  + (90 - lat)  * (MAP_CAL.mH / 180);
+  return { x: (px / MAP_CAL.imgW) * 100, y: (py / MAP_CAL.imgH) * 100 };
+}
+
+/** Converte clique no elemento imagem para lat/lon */
+function clickToCoord(event, imgEl) {
+  const rect = imgEl.getBoundingClientRect();
+  const relX = (event.clientX - rect.left) / rect.width;
+  const relY = (event.clientY - rect.top)  / rect.height;
+  // Inverte a fórmula de toPercent considerando bordas
+  const pxImg = relX * MAP_CAL.imgW;
+  const pyImg = relY * MAP_CAL.imgH;
+  const lon = ((pxImg - MAP_CAL.left) / MAP_CAL.mW) * 360 - 180;
+  const lat =  90 - ((pyImg - MAP_CAL.top)  / MAP_CAL.mH) * 180;
+  return {
+    lat: Math.round(clamp(lat, -88, 88) / 1) * 1,
+    lon: Math.round(clamp(lon, -178, 178) / 1) * 1,
+  };
+}
+
+/* ─────────────────────────────────────────────────
+   DETECÇÃO DE REGIÃO GEOGRÁFICA ESTRITA
+   Usa polígonos/retângulos aproximados por país/região
+   Cada região tem seu próprio banco de perguntas
+   → evita cruzamentos como Grécia/Noruega
+───────────────────────────────────────────────── */
+const REGIONS = [
+  // América do Sul
+  { id:'brasil',        label:'Brasil',               latMin:-34, latMax:5,   lonMin:-74, lonMax:-34 },
+  { id:'argentina',     label:'Argentina / Chile',    latMin:-56, latMax:-22, lonMin:-74, lonMax:-52 },
+  { id:'peru_bolivia',  label:'Peru / Bolívia',        latMin:-23, latMax:0,   lonMin:-82, lonMax:-65 },
+  { id:'colombia',      label:'Colômbia / Venezuela',  latMin:0,   latMax:13,  lonMin:-76, lonMax:-60 },
+  { id:'am_sul',        label:'América do Sul',        latMin:-56, latMax:13,  lonMin:-82, lonMax:-34 },
+
+  // América do Norte
+  { id:'mexico',        label:'México',                latMin:14,  latMax:32,  lonMin:-120,lonMax:-86 },
+  { id:'eua',           label:'Estados Unidos',        latMin:25,  latMax:50,  lonMin:-125,lonMax:-65 },
+  { id:'canada',        label:'Canadá',                latMin:49,  latMax:72,  lonMin:-142,lonMax:-52 },
+  { id:'am_norte',      label:'América do Norte',      latMin:14,  latMax:72,  lonMin:-170,lonMax:-52 },
+
+  // Europa (subdivisões)
+  { id:'portugal',      label:'Portugal',              latMin:37,  latMax:42,  lonMin:-10, lonMax:-6  },
+  { id:'espanha',       label:'Espanha',               latMin:36,  latMax:44,  lonMin:-9,  lonMax:4   },
+  { id:'franca',        label:'França',                latMin:42,  latMax:51,  lonMin:-5,  lonMax:9   },
+  { id:'italia',        label:'Itália',                latMin:37,  latMax:47,  lonMin:7,   lonMax:18  },
+  { id:'alemanha',      label:'Alemanha / Áustria',    latMin:47,  latMax:55,  lonMin:6,   lonMax:18  },
+  { id:'grecia',        label:'Grécia',                latMin:35,  latMax:42,  lonMin:20,  lonMax:28  },
+  { id:'escandinavia',  label:'Escandinávia',          latMin:55,  latMax:72,  lonMin:4,   lonMax:32  },
+  { id:'russia_europa', label:'Rússia (Europa)',        latMin:50,  latMax:70,  lonMin:28,  lonMax:60  },
+  { id:'europa',        label:'Europa',                latMin:35,  latMax:72,  lonMin:-12, lonMax:45  },
+
+  // África (subdivisões)
+  { id:'africa_norte',  label:'Norte da África',       latMin:15,  latMax:38,  lonMin:-6,  lonMax:37  },
+  { id:'africa_sul',    label:'África do Sul',         latMin:-36, latMax:-22, lonMin:16,  lonMax:36  },
+  { id:'africa_leste',  label:'Leste da África',       latMin:-12, latMax:15,  lonMin:30,  lonMax:52  },
+  { id:'africa_oeste',  label:'África Ocidental',      latMin:4,   latMax:20,  lonMin:-18, lonMax:15  },
+  { id:'africa',        label:'África',                latMin:-36, latMax:38,  lonMin:-18, lonMax:52  },
+
+  // Oriente Médio / Ásia
+  { id:'or_medio',      label:'Oriente Médio',         latMin:12,  latMax:42,  lonMin:34,  lonMax:62  },
+  { id:'india',         label:'Índia',                 latMin:6,   latMax:36,  lonMin:66,  lonMax:92  },
+  { id:'china',         label:'China',                 latMin:18,  latMax:55,  lonMin:98,  lonMax:135 },
+  { id:'japao',         label:'Japão',                 latMin:30,  latMax:46,  lonMin:129, lonMax:146 },
+  { id:'russia_asia',   label:'Rússia / Sibéria',      latMin:50,  latMax:78,  lonMin:60,  lonMax:180 },
+  { id:'asia_se',       label:'Sudeste Asiático',      latMin:-10, latMax:22,  lonMin:94,  lonMax:142 },
+  { id:'asia',          label:'Ásia',                  latMin:-10, latMax:78,  lonMin:26,  lonMax:180 },
+
+  // Oceania
+  { id:'australia',     label:'Austrália',             latMin:-44, latMax:-10, lonMin:112, lonMax:154 },
+  { id:'oceania',       label:'Oceania',               latMin:-50, latMax:-10, lonMin:110, lonMax:180 },
+
+  // Polar
+  { id:'artico',        label:'Ártico',                latMin:66,  latMax:90,  lonMin:-180,lonMax:180 },
+  { id:'antartica',     label:'Antártida',             latMin:-90, latMax:-60, lonMin:-180,lonMax:180 },
+
+  // Oceanos (fallback)
+  { id:'oceano_atl',    label:'Oceano Atlântico',      latMin:-60, latMax:66,  lonMin:-60, lonMax:-20 },
+  { id:'oceano_pac',    label:'Oceano Pacífico',       latMin:-60, latMax:66,  lonMin:140, lonMax:180 },
+  { id:'oceano',        label:'Oceano',                latMin:-90, latMax:90,  lonMin:-180,lonMax:180 },
 ];
 
-// Estado do jogo
-let gameState = {
-    screen: 'menu', // menu, playing, question, teacher
-    numPlayers: 2,
-    players: [],
-    currentPlayer: 0,
-    questions: JSON.parse(JSON.stringify(INITIAL_QUESTIONS)),
-    currentQuestion: null,
-    selectedAnswer: null,
-    showFact: false
+function detectRegion(lat, lon) {
+  // Percorre do mais específico ao mais genérico
+  for (const r of REGIONS) {
+    if (lat >= r.latMin && lat <= r.latMax && lon >= r.lonMin && lon <= r.lonMax) {
+      return r;
+    }
+  }
+  return { id:'oceano', label:'Oceano' };
+}
+
+/* ─────────────────────────────────────────────────
+   BANCO DE PERGUNTAS INTERNO
+   Cada banco é indexado pelo id da região
+   Formato: { q, options:[A,B,C,D], answer:"A"|"B"|"C"|"D", fact }
+   IMPORTANTE: perguntas são geradas apenas para
+   a região onde o jogador está — sem cruzamentos.
+───────────────────────────────────────────────── */
+const QB = {
+
+  brasil: [
+    { q:"Qual é a capital do Brasil?", options:["São Paulo","Rio de Janeiro","Brasília","Manaus"], answer:"C", fact:"Brasília foi inaugurada em 1960 e tem forma de avião vista do alto." },
+    { q:"Em que ano o Brasil foi 'descoberto' pelos portugueses?", options:["1492","1500","1510","1488"], answer:"B", fact:"Pedro Álvares Cabral chegou ao Brasil em 22 de abril de 1500." },
+    { q:"Qual é o maior bioma do Brasil?", options:["Cerrado","Mata Atlântica","Caatinga","Amazônia"], answer:"D", fact:"A Amazônia cobre mais de 4 milhões de km² e abriga 10% de todas as espécies do planeta." },
+    { q:"Em que ano o Brasil declarou independência de Portugal?", options:["1808","1815","1822","1889"], answer:"C", fact:"D. Pedro I proclamou a independência às margens do Rio Ipiranga em 7 de setembro de 1822." },
+    { q:"Qual é o estado brasileiro de maior extensão?", options:["Pará","Mato Grosso","Minas Gerais","Amazonas"], answer:"D", fact:"O Amazonas tem 1,5 milhão de km² — maior que muitos países europeus juntos." },
+    { q:"Qual ciclo econômico predominou no Brasil colonial?", options:["Ouro","Cana-de-açúcar","Café","Borracha"], answer:"B", fact:"O ciclo do açúcar foi o primeiro grande ciclo econômico do Brasil colonial, do séc. XVI ao XVII." },
+    { q:"Qual tratado dividiu as possessões entre Portugal e Espanha em 1494?", options:["Tordesilhas","Alcáçovas","Madrid","Utrecht"], answer:"A", fact:"A linha de Tordesilhas foi traçada a 370 léguas a oeste das Ilhas de Cabo Verde." },
+    { q:"Qual é o ponto mais alto do Brasil?", options:["Pico do Itambé","Agulhas Negras","Pico da Neblina","Serra da Canastra"], answer:"C", fact:"O Pico da Neblina tem 2.994 m e fica na Amazônia, na fronteira com a Venezuela." },
+    { q:"Em que ano foi proclamada a República no Brasil?", options:["1888","1889","1891","1894"], answer:"B", fact:"A Proclamação da República ocorreu em 15 de novembro de 1889, liderada pelo Marechal Deodoro." },
+    { q:"Qual cidade foi capital do Brasil antes de Brasília?", options:["Salvador","São Paulo","Ouro Preto","Rio de Janeiro"], answer:"D", fact:"O Rio de Janeiro foi capital por 197 anos, de 1763 a 1960." },
+  ],
+
+  argentina: [
+    { q:"Qual é a capital da Argentina?", options:["Córdoba","Rosário","Mendoza","Buenos Aires"], answer:"D", fact:"Buenos Aires significa 'bons ventos' e foi fundada definitivamente em 1580." },
+    { q:"Qual é o ponto mais alto das Américas, localizado na Argentina?", options:["Monte Roraima","Pico da Neblina","Aconcágua","Fitz Roy"], answer:"C", fact:"O Aconcágua tem 6.961m e é o pico mais alto fora da Ásia." },
+    { q:"Qual guerra travou Argentina e Reino Unido em 1982?", options:["Guerra do Chaco","Guerra das Malvinas","Guerra do Paraguai","Guerra da Cisplatina"], answer:"B", fact:"A Guerra das Malvinas durou 74 dias e terminou com a vitória britânica." },
+    { q:"Qual grande rio banha a região do Rio da Prata?", options:["Amazonas","Paraná","São Francisco","Orinoco"], answer:"B", fact:"O Paraná tem 4.880 km de extensão e é o segundo maior rio da América do Sul." },
+  ],
+
+  peru_bolivia: [
+    { q:"Qual civilização construiu Machu Picchu?", options:["Maia","Asteca","Inca","Chavin"], answer:"C", fact:"Machu Picchu foi construída no século XV e nunca foi encontrada pelos conquistadores espanhóis." },
+    { q:"Qual é o lago mais alto e navegável do mundo?", options:["Lago Poopó","Lago Titicaca","Lago Maracaibo","Lago Izabal"], answer:"B", fact:"O Lago Titicaca está a 3.812m de altitude, na fronteira entre Peru e Bolívia." },
+    { q:"Qual é o deserto mais seco do mundo?", options:["Gobi","Saara","Atacama","Namibe"], answer:"C", fact:"Em partes do Atacama, não há chuva registrada nos últimos 400 anos." },
+    { q:"Por que a Bolívia é especial geograficamente?", options:["É um país insular","É o país mais populoso","Não tem saída para o mar","Tem dois fusos horários"], answer:"C", fact:"A Bolívia perdeu o acesso ao mar para o Chile na Guerra do Pacífico (1879-1884)." },
+  ],
+
+  colombia: [
+    { q:"Quem foi Simón Bolívar?", options:["Conquistador espanhol","Libertador da América do Sul","Imperador do Brasil","Rei da Colômbia"], answer:"B", fact:"Bolívar libertou Venezuela, Colômbia, Equador, Peru e Bolívia, que leva seu nome." },
+    { q:"Qual é a capital da Colômbia?", options:["Medellín","Cali","Cartagena","Bogotá"], answer:"D", fact:"Bogotá está a 2.600m de altitude e é uma das capitais mais altas do mundo." },
+    { q:"Qual produto agrícola tornou a Colômbia famosa mundialmente?", options:["Cacau","Açúcar","Café","Banana"], answer:"C", fact:"A Colômbia é o terceiro maior produtor de café do mundo, atrás de Brasil e Vietnã." },
+  ],
+
+  am_sul: [
+    { q:"Qual é a guerra que envolveu Argentina, Brasil, Uruguai e Paraguai (1864–1870)?", options:["Guerra do Chaco","Guerra da Cisplatina","Guerra do Paraguai","Guerra do Pacífico"], answer:"C", fact:"O Paraguai perdeu mais de metade de sua população nesta guerra." },
+    { q:"Qual é a cordilheira mais longa do mundo?", options:["Himalaia","Alpes","Andes","Rocky Mountains"], answer:"C", fact:"Os Andes têm 7.200 km de comprimento e mais de 100 vulcões ativos." },
+    { q:"Qual é a capital mais alta do mundo?", options:["Quito","Bogotá","La Paz","Adis Abeba"], answer:"C", fact:"La Paz fica a 3.640m de altitude na Bolívia." },
+  ],
+
+  mexico: [
+    { q:"Qual civilização foi conquistada pelos espanhóis no México em 1521?", options:["Inca","Maia","Olmeca","Asteca"], answer:"D", fact:"Hernán Cortés destruiu Tenochtitlán, capital asteca, onde hoje está a Cidade do México." },
+    { q:"Qual é a capital do México?", options:["Guadalajara","Monterrey","Tijuana","Cidade do México"], answer:"D", fact:"A Cidade do México foi construída sobre as ruínas da antiga Tenochtitlán." },
+    { q:"Qual rio forma grande parte da fronteira entre México e EUA?", options:["Rio Colorado","Rio Pecos","Rio Grande","Rio Conchos"], answer:"C", fact:"O Rio Grande / Rio Bravo tem 3.000 km de comprimento e separa os dois países por mais de 2.000 km." },
+  ],
+
+  eua: [
+    { q:"Em que ano os EUA declararam independência?", options:["1763","1775","1776","1783"], answer:"C", fact:"A Declaração de Independência foi redigida principalmente por Thomas Jefferson." },
+    { q:"Qual evento levou os EUA a entrar na Segunda Guerra Mundial?", options:["Invasão da Polônia","Queda da França","Ataque a Pearl Harbor","Batalha da Grã-Bretanha"], answer:"C", fact:"O ataque japonês a Pearl Harbor em 7 de dezembro de 1941 destruiu 188 aeronaves americanas." },
+    { q:"Qual presidente aboliu a escravidão nos EUA?", options:["George Washington","Thomas Jefferson","Abraham Lincoln","Ulysses Grant"], answer:"C", fact:"A Proclamação de Emancipação de Lincoln em 1863 libertou os escravizados nos estados do Sul." },
+    { q:"Qual é o maior estado dos EUA em extensão?", options:["Texas","Califórnia","Montana","Alasca"], answer:"D", fact:"O Alasca foi comprado da Rússia em 1867 por apenas 7,2 milhões de dólares." },
+  ],
+
+  canada: [
+    { q:"Qual é a capital do Canadá?", options:["Toronto","Vancouver","Montréal","Ottawa"], answer:"D", fact:"Ottawa foi escolhida capital em 1857 pela Rainha Vitória, para mediar rivalidade entre cidades." },
+    { q:"Qual característica geográfica torna o Canadá único?", options:["Maior população americana","Maior linha costeira do mundo","Maior floresta tropical","Maior delta fluvial"], answer:"B", fact:"O Canadá tem 202.080 km de linha costeira — a maior do mundo." },
+    { q:"Qual foi o papel do Canadá na Segunda Guerra Mundial?", options:["Ficou neutro","Lutou ao lado dos Aliados","Apoiou o Eixo","Declarou guerra ao Japão apenas"], answer:"B", fact:"O Canadá foi fundamental no Dia D (junho de 1944) e enviou mais de 1 milhão de soldados." },
+  ],
+
+  am_norte: [
+    { q:"Qual é o maior país das Américas em extensão?", options:["EUA","Brasil","México","Canadá"], answer:"D", fact:"O Canadá é o segundo maior país do mundo, com 9,98 milhões de km²." },
+    { q:"Qual é o pico mais alto da América do Norte?", options:["Monte Logan","Monte Whitney","Denali","Monte Rainier"], answer:"C", fact:"O Denali, no Alasca, tem 6.190m e é o ponto mais alto da América do Norte." },
+  ],
+
+  portugal: [
+    { q:"Qual é a capital de Portugal?", options:["Porto","Coimbra","Braga","Lisboa"], answer:"D", fact:"Lisboa é uma das cidades mais antigas da Europa, fundada há mais de 3.000 anos." },
+    { q:"Qual explorador português chegou à Índia pelo mar em 1498?", options:["Pedro Álvares Cabral","Bartolomeu Dias","Vasco da Gama","Fernão de Magalhães"], answer:"C", fact:"Vasco da Gama abriu a rota marítima para as Índias, dobrando o Cabo da Boa Esperança." },
+    { q:"Que evento devastou Lisboa em 1755?", options:["Erupção vulcânica","Terremoto e maremoto","Guerra civil","Epidemia de peste"], answer:"B", fact:"O terremoto de 1755 matou entre 30.000 e 40.000 pessoas e destruiu 85% dos edifícios de Lisboa." },
+  ],
+
+  espanha: [
+    { q:"Qual é a capital da Espanha?", options:["Barcelona","Sevilha","Valência","Madri"], answer:"D", fact:"Madri é a capital há mais de 450 anos e abriga o famoso Museu do Prado." },
+    { q:"Quem financiou a primeira viagem de Colombo em 1492?", options:["Portugal","França","Inglaterra","Espanha"], answer:"D", fact:"Os Reis Católicos Fernando e Isabel financiaram a viagem de Colombo ao que chamou de 'Índias'." },
+    { q:"Que império espanhol foi o maior em extensão territorial?", options:["Napoleônico","Império Colonial Espanhol","Habsburgo","Romano"], answer:"B", fact:"O Império Colonial Espanhol chegou a ter 20 milhões de km², cobrindo grande parte das Américas." },
+  ],
+
+  franca: [
+    { q:"O que foi a Revolução Francesa de 1789?", options:["Golpe militar","Revolução popular contra a monarquia","Revolução Industrial","Invasão estrangeira"], answer:"B", fact:"A Revolução Francesa aboliu o feudalismo e inspirou movimentos democráticos ao redor do mundo." },
+    { q:"Quem foi Napoleão Bonaparte?", options:["Rei da França","Imperador da França","General da Revolução","Presidente da República"], answer:"B", fact:"Napoleão reformou o sistema jurídico, criando o Código Napoleônico, base de muitos sistemas legais atuais." },
+    { q:"Qual é a capital da França?", options:["Lyon","Marselha","Bordeaux","Paris"], answer:"D", fact:"Paris é conhecida como a 'Cidade Luz' e recebe mais de 30 milhões de turistas por ano." },
+  ],
+
+  italia: [
+    { q:"Qual é a capital da Itália?", options:["Milão","Florença","Nápoles","Roma"], answer:"D", fact:"Roma é chamada de 'Cidade Eterna' e foi o centro do maior império da Antiguidade." },
+    { q:"Qual civilização dominava a Itália antes da era cristã?", options:["Grega","Fenícia","Romana","Etrusca"], answer:"C", fact:"Roma conquistou quase toda a Europa, Norte da África e Oriente Médio." },
+    { q:"O que foi o Renascimento?", options:["Revolução industrial italiana","Movimento cultural de renovação artística e científica","Reforma religiosa","Unificação da Itália"], answer:"B", fact:"O Renascimento italiano (séc. XIV–XVII) produziu Leonardo da Vinci, Michelangelo e Galileu Galilei." },
+  ],
+
+  alemanha: [
+    { q:"Em que ano caiu o Muro de Berlim?", options:["1985","1987","1989","1991"], answer:"C", fact:"O Muro foi construído em 1961 e durante 28 anos dividiu famílias e a cidade de Berlim." },
+    { q:"Qual evento iniciou a Primeira Guerra Mundial em 1914?", options:["Invasão da Bélgica","Assassinato do Arquiduque Franz Ferdinand","Crise do Marrocos","Queda do Império Otomano"], answer:"B", fact:"O assassinato em Sarajevo em 28 de junho de 1914 desencadeou um conflito que matou 20 milhões de pessoas." },
+    { q:"Qual é a capital da Alemanha?", options:["Munique","Hamburgo","Frankfurt","Berlim"], answer:"D", fact:"Berlim é a maior cidade da Alemanha e voltou a ser capital após a reunificação em 1990." },
+  ],
+
+  grecia: [
+    { q:"Qual filósofo ateniense foi condenado à morte por envenenamento com cicuta?", options:["Platão","Aristóteles","Tales","Sócrates"], answer:"D", fact:"Sócrates nunca escreveu nada — seu pensamento é conhecido pelos diálogos de seu discípulo Platão." },
+    { q:"Onde ocorreram os primeiros Jogos Olímpicos da história?", options:["Atenas","Esparta","Olímpia","Corinto"], answer:"C", fact:"Os Jogos Olímpicos da Antiguidade ocorriam em Olímpia desde 776 a.C. em honra a Zeus." },
+    { q:"O que foi a Democracia Ateniense?", options:["Governo de um rei","Sistema de governo participativo na Grécia antiga","Governo de generais","República romana"], answer:"B", fact:"Atenas foi a primeira cidade a desenvolver a democracia, embora apenas homens livres pudessem votar." },
+    { q:"Qual guerra ocorreu entre gregos e persas no século V a.C.?", options:["Guerra do Peloponeso","Guerras Médicas","Guerra de Tróia","Guerra da Macedônia"], answer:"B", fact:"Na Batalha de Salamina (480 a.C.), a frota grega derrotou a poderosa armada persa de Xerxes." },
+  ],
+
+  escandinavia: [
+    { q:"Quem foram os Vikings?", options:["Guerreiros romanos do norte","Navegadores e guerreiros escandinavos medievais","Tribos celtas","Comerciantes bizantinos"], answer:"B", fact:"Os Vikings chegaram à América do Norte (Vinlândia) cerca de 500 anos antes de Colombo." },
+    { q:"Qual país escandinavo foi o primeiro a conceder direito de voto às mulheres?", options:["Suécia","Dinamarca","Finlândia","Noruega"], answer:"D", fact:"A Noruega concedeu voto às mulheres em 1913, sendo um dos primeiros países do mundo." },
+    { q:"O que é o Fiorde?", options:["Montanha vulcânica","Vale submerso pelo mar","Planície de gelo","Floresta boreal"], answer:"B", fact:"Os fiordes noruegueses foram esculpidos por geleiras durante a última era glacial." },
+  ],
+
+  russia_europa: [
+    { q:"Qual é a capital da Rússia?", options:["São Petersburgo","Kiev","Moscou","Novosibirsk"], answer:"C", fact:"Moscou abriga o Kremlin e a Praça Vermelha, símbolos do poder russo." },
+    { q:"O que foi a Revolução Russa de 1917?", options:["Golpe militar","Revolução que derrubou o Czar e instaurou o comunismo","Guerra civil","Invasão estrangeira"], answer:"B", fact:"A Revolução de Outubro de 1917 levou Lenin e os bolcheviques ao poder, criando a URSS." },
+    { q:"Qual é o lago mais profundo do mundo, na Rússia?", options:["Lago Ladoga","Lago Cáspio","Lago Baikal","Lago Onega"], answer:"C", fact:"O Baikal tem 1.642m de profundidade e contém 20% de toda a água doce superficial do mundo." },
+  ],
+
+  europa: [
+    { q:"Qual é o menor país do mundo, localizado na Europa?", options:["Monaco","San Marino","Liechtenstein","Vaticano"], answer:"D", fact:"O Vaticano tem apenas 0,44 km² e é a sede da Igreja Católica." },
+    { q:"Qual país europeu liderou as Grandes Navegações no século XV?", options:["Espanha","Inglaterra","Holanda","Portugal"], answer:"D", fact:"Portugal criou a Escola de Sagres e foi pioneiro nas rotas marítimas para a África e Ásia." },
+    { q:"Em que ano terminou a Segunda Guerra Mundial na Europa?", options:["1943","1944","1945","1946"], answer:"C", fact:"A rendição incondicional da Alemanha foi assinada em 8 de maio de 1945 — o Dia da Vitória na Europa." },
+    { q:"Qual organização integra economicamente os países europeus?", options:["OTAN","OCDE","União Europeia","Conselho Europeu"], answer:"C", fact:"A União Europeia foi criada pelo Tratado de Maastricht em 1993 e tem 27 países membros." },
+  ],
+
+  africa_norte: [
+    { q:"Qual é o maior deserto do mundo?", options:["Gobi","Kalahari","Namibe","Saara"], answer:"D", fact:"O Saara tem 9,2 milhões de km², aproximadamente o tamanho dos Estados Unidos." },
+    { q:"Qual civilização construiu as pirâmides de Gizé?", options:["Suméria","Fenícia","Egípcia","Núbia"], answer:"C", fact:"A Grande Pirâmide de Gizé foi o edifício mais alto do mundo por 3.800 anos." },
+    { q:"Qual é o rio mais longo do mundo?", options:["Amazonas","Congo","Niger","Nilo"], answer:"D", fact:"O Nilo tem 6.650 km e foi a base da civilização egípcia por mais de 5.000 anos." },
+    { q:"Qual é a capital do Egito?", options:["Alexandria","Luxor","Assuã","Cairo"], answer:"D", fact:"O Cairo é a maior cidade da África e do mundo árabe, com mais de 20 milhões de habitantes." },
+  ],
+
+  africa_sul: [
+    { q:"Quem liderou a luta contra o apartheid na África do Sul?", options:["Desmond Tutu","Steve Biko","Nelson Mandela","Thabo Mbeki"], answer:"C", fact:"Mandela ficou 27 anos preso e se tornou o primeiro presidente negro da África do Sul em 1994." },
+    { q:"O que foi o apartheid?", options:["Guerra civil","Sistema de segregação racial","Ditadura militar","Movimento de independência"], answer:"B", fact:"O apartheid vigorou de 1948 a 1994 e dividia a sociedade sul-africana por raça." },
+    { q:"Qual é o monte mais alto da África?", options:["Monte Quênia","Rwenzori","Kilimanjaro","Ras Dejen"], answer:"C", fact:"O Kilimanjaro tem 5.895m e é um vulcão inativo na Tanzânia. Suas geleiras estão desaparecendo." },
+  ],
+
+  africa_leste: [
+    { q:"Qual é o maior lago da África?", options:["Tanganica","Malawi","Vitória","Chade"], answer:"C", fact:"O Lago Vitória é o segundo maior lago de água doce do mundo em superfície." },
+    { q:"Qual país é considerado o 'berço da humanidade'?", options:["Egito","Etiópia","Tanzânia","Quênia"], answer:"B", fact:"A Etiópia abriga fósseis de hominídeos com mais de 3 milhões de anos, como 'Lucy' (Australopithecus)." },
+  ],
+
+  africa_oeste: [
+    { q:"Qual empire medieval controlava o comércio de ouro e sal na África Ocidental?", options:["Império Zulu","Império Mali","Império Otomano","Reino do Congo"], answer:"B", fact:"O Império Mali (séc. XIII–XVI) foi um dos maiores impérios da história africana." },
+    { q:"Qual é o maior país da África em extensão?", options:["Nigéria","Sudão","Congo","Argélia"], answer:"D", fact:"A Argélia tem 2,38 milhões de km² e é o maior país do continente africano." },
+  ],
+
+  africa: [
+    { q:"Quem colonizou Angola, Moçambique e Cabo Verde?", options:["Inglaterra","França","Bélgica","Portugal"], answer:"D", fact:"Portugal manteve seu império colonial africano por mais de 500 anos, até 1975." },
+    { q:"Quantos países existem na África?", options:["44","54","62","48"], answer:"B", fact:"A África tem 54 países reconhecidos, mais do que qualquer outro continente." },
+  ],
+
+  or_medio: [
+    { q:"Qual é o principal recurso que torna o Oriente Médio estratégico?", options:["Ouro","Diamantes","Petróleo","Fosfato"], answer:"C", fact:"O Oriente Médio detém cerca de 48% das reservas mundiais de petróleo." },
+    { q:"Qual é a cidade sagrada para cristãos, judeus e muçulmanos?", options:["Meca","Medina","Bagdá","Jerusalém"], answer:"D", fact:"Jerusalém é a única cidade do mundo considerada sagrada pelas três religiões abraâmicas." },
+    { q:"O que foi a Mesopotâmia?", options:["Região entre o Nilo e o Mar Vermelho","Região entre os rios Tigre e Eufrates","Antiga Pérsia","Região da Anatólia"], answer:"B", fact:"A Mesopotâmia (atual Iraque) é considerada o berço da civilização, com escrita e leis surgindo há 5.000 anos." },
+    { q:"Qual império islâmico dominou o Oriente Médio entre os séculos XIV e XX?", options:["Mongol","Persa","Otomano","Abássida"], answer:"C", fact:"O Império Otomano durou 623 anos (1299-1922) e chegou a ter 32 províncias e 5 mares." },
+  ],
+
+  india: [
+    { q:"Quem foi Mahatma Gandhi?", options:["Rei da Índia","Líder da independência indiana pela não-violência","General britânico","Filósofo budista"], answer:"B", fact:"Gandhi foi assassinado em 30 de janeiro de 1948, apenas 5 meses após a independência da Índia." },
+    { q:"Qual rio é o mais sagrado para os hinduístas?", options:["Indo","Brahmaputra","Yamuna","Ganges"], answer:"D", fact:"O Ganges tem 2.525 km e mais de 400 milhões de pessoas dependem de suas águas." },
+    { q:"Qual civilização antiga floresceu no Vale do Indo?", options:["Vedica","Drávida","Civilização do Vale do Indo","Ariana"], answer:"C", fact:"A Civilização do Vale do Indo (3300–1300 a.C.) tinha cidades planejadas com esgoto — avançadas para a época." },
+    { q:"Em que ano a Índia se tornou independente do domínio britânico?", options:["1945","1947","1950","1952"], answer:"B", fact:"A independência da Índia em 15 de agosto de 1947 foi seguida pela partição e criação do Paquistão." },
+  ],
+
+  china: [
+    { q:"Qual é a capital da China?", options:["Xangai","Hong Kong","Nanquim","Pequim"], answer:"D", fact:"A Cidade Proibida em Pequim tem 9.999 cômodos — os construtores evitavam 10.000, número divino." },
+    { q:"Em que ano a República Popular da China foi fundada?", options:["1945","1947","1949","1952"], answer:"C", fact:"Mao Tsé-Tung proclamou a República Popular da China em 1º de outubro de 1949." },
+    { q:"Para que servia a Grande Muralha da China?", options:["Controle de inundações","Fronteira comercial","Proteção contra invasões nômades","Divisão de províncias"], answer:"C", fact:"A Muralha tem mais de 21.000 km e levou séculos para ser construída por várias dinastias." },
+    { q:"Qual invenção chinesa transformou a comunicação no mundo?", options:["Bússola","Papel e impressão","Pólvora","Todas as anteriores"], answer:"D", fact:"A China inventou o papel, a impressão, a bússola e a pólvora — quatro das invenções mais impactantes." },
+  ],
+
+  japao: [
+    { q:"Qual evento marcou o fim da participação do Japão na Segunda Guerra Mundial?", options:["Invasão aliada de Tóquio","Queda de Berlim","Bombardeio atômico de Hiroshima e Nagasaki","Rendição da Alemanha"], answer:"C", fact:"As bombas atômicas foram lançadas em 6 e 9 de agosto de 1945, matando entre 130.000 e 226.000 pessoas." },
+    { q:"Qual é a capital do Japão?", options:["Osaka","Quioto","Tóquio","Hiroshima"], answer:"C", fact:"Tóquio é a maior área metropolitana do mundo, com mais de 37 milhões de pessoas." },
+    { q:"O que foi o shogunato no Japão?", options:["Sistema de governo imperial","Governo militar liderado por um shogun","Sistema de castas","Governo religioso budista"], answer:"B", fact:"O shogunato durou de 1185 a 1868, quando o Imperador Meiji restaurou o poder imperial." },
+  ],
+
+  russia_asia: [
+    { q:"Qual é o lago mais profundo do mundo?", options:["Lago Ladoga","Lago Cáspio","Lago Baikal","Mar de Aral"], answer:"C", fact:"O Lago Baikal tem 1.642m de profundidade e é considerado o lago mais antigo do mundo (25 milhões de anos)." },
+    { q:"Qual é a ferrovia mais longa do mundo, que cruza a Sibéria?", options:["Ferrovia Pan-Americana","Ferrovia Transiberiana","Ferrovia Transanadina","Ferrovia Oriental"], answer:"B", fact:"A Ferrovia Transiberiana tem 9.288 km e conecta Moscou a Vladivostok, cruzando 8 fusos horários." },
+  ],
+
+  asia_se: [
+    { q:"Qual templo angkoriano é o maior edifício religioso do mundo?", options:["Templo de Bagan","Templo de Borobudur","Angkor Wat","Templo de Pagan"], answer:"C", fact:"Angkor Wat, no Camboja, foi construído no século XII e cobre 162 hectares." },
+    { q:"Qual país do Sudeste Asiático tem o maior número de ilhas do mundo?", options:["Filipinas","Malásia","Tailândia","Indonésia"], answer:"D", fact:"A Indonésia tem mais de 17.000 ilhas e é o maior arquipélago do mundo." },
+  ],
+
+  asia: [
+    { q:"Qual é o monte mais alto do mundo?", options:["K2","Kangchenjunga","Monte Branco","Everest"], answer:"D", fact:"O Monte Everest tem 8.849m e cresce cerca de 4mm por ano pela tectônica de placas." },
+    { q:"Qual é o país mais populoso do mundo?", options:["China","Índia","EUA","Indonésia"], answer:"B", fact:"A Índia ultrapassou a China em 2023 como o país mais populoso do mundo, com 1,4 bilhão de habitantes." },
+  ],
+
+  australia: [
+    { q:"Qual é a capital da Austrália?", options:["Sydney","Melbourne","Brisbane","Canberra"], answer:"D", fact:"Canberra foi projetada pelo arquiteto americano Walter Burley Griffin após concurso internacional em 1911." },
+    { q:"Quem foram os primeiros habitantes da Austrália?", options:["Polinésios","Maoris","Aborígenes","Melanésios"], answer:"C", fact:"Os aborígenes australianos têm a cultura contínua mais antiga do mundo, há pelo menos 65.000 anos." },
+    { q:"Qual é o maior recife de corais do mundo?", options:["Recife de Belize","Recife Ningaloo","Grande Barreira de Corais","Recife das Maldivas"], answer:"C", fact:"A Grande Barreira de Corais tem 2.300 km e abriga mais de 1.500 espécies de peixes." },
+  ],
+
+  oceania: [
+    { q:"Qual explorador europeu mapeou a Oceania no século XVIII?", options:["Vasco da Gama","Fernão de Magalhães","James Cook","Francis Drake"], answer:"C", fact:"James Cook fez três grandes viagens, mapeando a Austrália, Nova Zelândia e ilhas do Pacífico." },
+    { q:"Qual país da Oceania foi o primeiro a conceder voto às mulheres (1893)?", options:["Austrália","Samoa","Nova Zelândia","Fiji"], answer:"C", fact:"A Nova Zelândia foi o primeiro país autônomo do mundo a dar direito de voto às mulheres." },
+  ],
+
+  artico: [
+    { q:"Qual é o oceano que banha o Polo Norte?", options:["Atlântico","Índico","Pacífico","Ártico"], answer:"D", fact:"O Oceano Ártico está perdendo gelo rapidamente — o Ártico aquece 3x mais rápido que o restante do planeta." },
+    { q:"Qual país tem reivindicações no Ártico além de Canadá, Rússia, EUA e Noruega?", options:["Islândia","Suécia","Finlândia","Dinamarca"], answer:"D", fact:"A Dinamarca reivindica parte do Ártico através da Groenlândia, território autônomo dinamarquês." },
+  ],
+
+  oceano: [
+    { q:"Qual foi o primeiro europeu a cruzar o Oceano Pacífico?", options:["Colombo","Vasco da Gama","Fernão de Magalhães","João Dias"], answer:"C", fact:"Magalhães morreu nas Filipinas em 1521 — apenas 18 dos 270 homens que partiram completaram a viagem." },
+    { q:"Qual é o oceano mais extenso do mundo?", options:["Atlântico","Índico","Ártico","Pacífico"], answer:"D", fact:"O Pacífico tem área maior que todos os continentes juntos." },
+    { q:"Qual é o ponto mais profundo dos oceanos?", options:["Fossa de Porto Rico","Fossa de Tonga","Fossa de Java","Fossa das Marianas"], answer:"D", fact:"A Fossa das Marianas atinge 11.034m de profundidade no Oceano Pacífico." },
+    { q:"O que são as Grandes Navegações?", options:["Guerras navais medievais","Expansão marítima europeia dos séc. XV-XVI","Rotas comerciais romanas","Invasões vikings"], answer:"B", fact:"Portugal e Espanha lideraram as Grandes Navegações, conectando pela primeira vez todos os continentes." },
+  ],
 };
 
-// Inicializar app
-function init() {
-    render();
+/* Fallback: se banco da região não tem perguntas, usa geo_geral */
+QB['oceano_atl'] = QB['oceano'];
+QB['oceano_pac'] = QB['oceano'];
+QB['antartica']  = QB['artico'];
+
+/* ─────────────────────────────────────────────────
+   LOCALSTORAGE — PONTOS DO PROFESSOR
+───────────────────────────────────────────────── */
+const LS_KEY = 'geohistoria_pontos_v3';
+
+function loadPontos() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+  catch { return []; }
 }
 
-// Renderizar tela atual
-function render() {
-    const app = document.getElementById('app');
-    
-    switch(gameState.screen) {
-        case 'menu':
-            app.innerHTML = renderMenu();
-            break;
-        case 'playing':
-            app.innerHTML = renderGame();
-            break;
-        case 'question':
-            app.innerHTML = renderQuestion();
-            break;
-        case 'teacher':
-            app.innerHTML = renderTeacher();
-            break;
-    }
+function savePontos(arr) {
+  localStorage.setItem(LS_KEY, JSON.stringify(arr));
 }
 
-// Renderizar menu
-function renderMenu() {
-    return `
-        <div class="menu-container">
-            <div class="menu-card animate-fadeIn">
-                <div class="menu-header">
-                    <div class="globe-icon">🌍</div>
-                    <h1>Explorador Mundial</h1>
-                    <p>Aventura Educativa de Geografia e História</p>
-                </div>
-                
-                <div class="menu-content">
-                    <div class="config-section">
-                        <h2>
-                            <span>👥</span>
-                            Configurar Jogo
-                        </h2>
-                        <label>Número de Jogadores (1-20)</label>
-                        <input 
-                            type="number" 
-                            id="numPlayers" 
-                            min="1" 
-                            max="20" 
-                            value="${gameState.numPlayers}"
-                            onchange="gameState.numPlayers = Math.min(20, Math.max(1, parseInt(this.value) || 1))"
-                        >
-                    </div>
+let PONTOS_PROF = loadPontos();  // Array de pontos do professor
 
-                    <button class="btn-primary" onclick="startGame()">
-                        <span>▶</span>
-                        Iniciar Aventura
-                    </button>
+/* ─────────────────────────────────────────────────
+   ESTADO DO JOGO
+───────────────────────────────────────────────── */
+let G = {
+  players:[], currentIdx:0, round:1, totalRounds:10,
+  phase:'wait', lat:null, lon:null, region:null,
+  currentQ:null, usedQ:{}, mode:'auto',
+  pendingPos:null, gameActive:false,
+  profPontosQueue:[],   // fila de pontos do professor para o jogo
+  profLat:null, profLon:null,  // ponto temporário no painel
+};
 
-                    <button class="btn-secondary" onclick="openTeacher()">
-                        <span>⚙</span>
-                        Modo Professor
-                    </button>
+/* ─────────────────────────────────────────────────
+   SETUP — BUILD NAME FIELDS
+───────────────────────────────────────────────── */
+document.getElementById('cfg-players').addEventListener('input', buildNames);
+buildNames();
 
-                    <div class="info-box">
-                        <h3>
-                            <span>📖</span>
-                            Como Jogar
-                        </h3>
-                        <ul>
-                            <li>🌍 Viaje pelo mundo respondendo perguntas</li>
-                            <li>📍 Cada jogador começa em um local aleatório</li>
-                            <li>❓ Responda sobre geografia e história</li>
-                            <li>⭐ Ganhe 100 pontos por resposta correta</li>
-                            <li>🏆 Aprenda fatos incríveis sobre cada lugar</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+function buildNames() {
+  const n = clamp(parseInt(document.getElementById('cfg-players').value)||2, 1, 20);
+  const g = document.getElementById('names-grid');
+  g.innerHTML = '';
+  for (let i=1;i<=n;i++) {
+    g.innerHTML += `<div class="pname-row"><span class="pid-tag">P${i}</span><input id="pname-${i}" placeholder="Jogador ${i}" maxlength="18"></div>`;
+  }
 }
 
-// Renderizar tela de jogo
-function renderGame() {
-    return `
-        <div class="game-container">
-            <div class="game-wrapper">
-                ${renderScoreboard()}
-                ${renderCurrentTurn()}
-                ${renderMap()}
-            </div>
-        </div>
-    `;
+function setMode(m) {
+  G.mode = m;
+  document.getElementById('btn-mode-auto').classList.toggle('active', m==='auto');
+  document.getElementById('btn-mode-prof').classList.toggle('active', m==='prof');
 }
 
-// Renderizar placar
-function renderScoreboard() {
-    return `
-        <div class="scoreboard">
-            <div class="scoreboard-header">
-                <h2 class="scoreboard-title">
-                    <span>🏆</span>
-                    Placar
-                </h2>
-                <button class="btn-exit" onclick="exitGame()">Sair</button>
-            </div>
-            <div class="players-grid">
-                ${gameState.players.map((player, idx) => `
-                    <div class="player-card ${idx === gameState.currentPlayer ? 'active' : ''}" 
-                         style="background-color: ${player.color}20; border-color: ${idx === gameState.currentPlayer ? '#fbbf24' : player.color}">
-                        <div class="player-header">
-                            <div class="player-dot" style="background-color: ${player.color}"></div>
-                            <div class="player-name">${player.name}</div>
-                        </div>
-                        <div class="player-score" style="color: ${player.color}">${player.score}</div>
-                        <div class="player-stats">${player.correctAnswers}/${player.totalQuestions} corretas</div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
+/* ─────────────────────────────────────────────────
+   NAVEGAÇÃO DE TELAS
+───────────────────────────────────────────────── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screen-professor') renderProfPanel();
 }
 
-// Renderizar turno atual
-function renderCurrentTurn() {
-    const player = gameState.players[gameState.currentPlayer];
-    return `
-        <div class="current-turn">
-            <div class="turn-content">
-                <div class="turn-player-info">
-                    <div class="turn-player-avatar" style="background-color: ${player.color}">
-                        ${player.id}
-                    </div>
-                    <div class="turn-player-details">
-                        <div class="turn-label">É a vez de</div>
-                        <div class="turn-player-name">${player.name}</div>
-                        <div class="turn-location">📍 ${player.location} (${player.country})</div>
-                    </div>
-                </div>
-                <button class="btn-travel" onclick="movePlayer()">
-                    <span>📍</span>
-                    Viajar
-                </button>
-            </div>
-        </div>
-    `;
+function confirmBack() {
+  if (G.gameActive) document.getElementById('modal-bg').classList.add('visible');
+  else showScreen('screen-menu');
 }
 
-// Renderizar mapa
-function renderMap() {
-    const player = gameState.players[gameState.currentPlayer];
-    
-    // Criar linhas de caminho para o jogador atual se houver histórico
-    let pathLines = '';
-    if (player.previousPosition) {
-        pathLines = `
-            <svg class="map-path-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;">
-                <line 
-                    x1="${player.previousPosition.x}%" 
-                    y1="${player.previousPosition.y}%" 
-                    x2="${player.position.x}%" 
-                    y2="${player.position.y}%" 
-                    stroke="${player.color}" 
-                    stroke-width="3" 
-                    stroke-dasharray="5,5"
-                    opacity="0.7"
-                />
-                <circle 
-                    cx="${player.previousPosition.x}%" 
-                    cy="${player.previousPosition.y}%" 
-                    r="4" 
-                    fill="${player.color}" 
-                    opacity="0.5"
-                />
-            </svg>
-        `;
-    }
-    
-    return `
-        <div class="map-container">
-            <div class="map-wrapper">
-                <img src="worldmap.png" alt="Mapa Múndi" class="map-image">
-                ${pathLines}
-                ${gameState.players.map((p, idx) => `
-                    <div class="player-marker ${idx === gameState.currentPlayer ? 'active animate-bounce' : ''}" 
-                         style="left: ${p.position.x}%; top: ${p.position.y}%">
-                        <div class="marker-circle" style="background-color: ${p.color}">
-                            ${p.id}
-                        </div>
-                        ${idx === gameState.currentPlayer ? `
-                            <div class="marker-label" style="border-color: ${p.color}">
-                                ${p.name}
-                            </div>
-                        ` : ''}
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
+function closeModal() { document.getElementById('modal-bg').classList.remove('visible'); }
+
+function doGoMenu() {
+  closeModal();
+  G.gameActive = false;
+  showScreen('screen-menu');
 }
 
-// Renderizar tela de pergunta
-function renderQuestion() {
-    const player = gameState.players[gameState.currentPlayer];
-    const q = gameState.currentQuestion;
-    const isCorrect = gameState.selectedAnswer === q.correct;
-    
-    return `
-        <div class="question-container">
-            <div class="question-wrapper animate-fadeIn">
-                <div class="question-player-info">
-                    <div class="question-player-left">
-                        <div class="question-avatar" style="background-color: ${player.color}">
-                            ${player.id}
-                        </div>
-                        <div>
-                            <div class="question-player-name">${player.name}</div>
-                            <div class="question-player-score">Pontuação: ${player.score}</div>
-                        </div>
-                    </div>
-                    <div class="question-location">
-                        <div class="location-label">Você está em</div>
-                        <div class="location-name">📍 ${q.location}</div>
-                        <div class="location-country">${q.country}</div>
-                    </div>
-                </div>
+/* ─────────────────────────────────────────────────
+   PAINEL DO PROFESSOR
+───────────────────────────────────────────────── */
 
-                <div class="question-content">
-                    <div class="question-badge">❓ Pergunta de Geografia e História</div>
-                    <h3 class="question-text">${q.question}</h3>
+/** Clique no mapa do professor */
+function handleMapClick(event) {
+  const img = document.getElementById('prof-map-img');
+  const { lat, lon } = clickToCoord(event, img);
+  G.profLat = lat;
+  G.profLon = lon;
 
-                    <div class="options-grid">
-                        ${q.options.map((option, idx) => `
-                            <button 
-                                class="option-button ${gameState.selectedAnswer === idx ? 'selected' : ''} ${
-                                    gameState.showFact ? (
-                                        idx === q.correct ? 'correct' : 
-                                        idx === gameState.selectedAnswer ? 'incorrect' : ''
-                                    ) : ''
-                                }"
-                                onclick="selectAnswer(${idx})"
-                                ${gameState.showFact ? 'disabled' : ''}
-                            >
-                                <span class="option-letter">${String.fromCharCode(65 + idx)}</span>
-                                ${option}
-                                ${gameState.showFact && idx === q.correct ? '<span class="option-icon">✓</span>' : ''}
-                                ${gameState.showFact && idx === gameState.selectedAnswer && idx !== q.correct ? '<span class="option-icon">✗</span>' : ''}
-                            </button>
-                        `).join('')}
-                    </div>
+  // Posiciona marcador temporário
+  const { x, y } = toPercent(lat, lon);
+  const marker = document.getElementById('prof-marker');
+  marker.style.left = `${x}%`;
+  marker.style.top  = `${y}%`;
+  marker.classList.add('visible');
 
-                    ${!gameState.showFact && gameState.selectedAnswer !== null ? `
-                        <button class="btn-confirm" onclick="checkAnswer()">
-                            Confirmar Resposta
-                        </button>
-                    ` : ''}
+  const fLat = `${Math.abs(lat)}°${lat>=0?'N':'S'}`;
+  const fLon = `${Math.abs(lon)}°${lon>=0?'L':'O'}`;
+  document.getElementById('prof-marker-label').textContent = `${fLat}, ${fLon}`;
 
-                    ${gameState.showFact ? `
-                        <div class="result-box ${isCorrect ? 'correct' : 'incorrect'}">
-                            <div class="result-header">
-                                <span class="result-icon">${isCorrect ? '🏆' : '⭐'}</span>
-                                <span class="result-title">
-                                    ${isCorrect ? 'Correto! +100 pontos!' : 'Ops! Continue tentando!'}
-                                </span>
-                            </div>
-                            <div class="fact-box">
-                                <div class="fact-label">
-                                    <span>📚</span>
-                                    Você Sabia?
-                                </div>
-                                <p class="fact-text">${q.fact}</p>
-                            </div>
-                        </div>
+  // Preenche os campos de coordenada
+  document.getElementById('f-lat').value = lat;
+  document.getElementById('f-lon').value = lon;
 
-                        <button class="btn-next" onclick="nextPlayer()">
-                            Próximo Jogador →
-                        </button>
-                    ` : ''}
-                </div>
-            </div>
-        </div>
-    `;
+  // Detecta região e preenche sugestão
+  const region = detectRegion(lat, lon);
+  if (!document.getElementById('f-region').value) {
+    document.getElementById('f-region').value = region.label;
+  }
+
+  // Auto-preenche pergunta geográfica se vazio
+  const geoQ = document.getElementById('f-geo-q');
+  if (!geoQ.value) {
+    geoQ.value = `Qual é a Latitude e a Longitude desta posição no mapa?`;
+    document.getElementById('f-geo-a').value = `Lat: ${fLat}, Lon: ${fLon}`;
+    document.getElementById('f-geo-b').value = `Lat: ${Math.abs(lat+20)}°${lat+20>=0?'N':'S'}, Lon: ${Math.abs(lon+30)}°${lon+30>=0?'L':'O'}`;
+    document.getElementById('f-geo-c').value = `Lat: ${Math.abs(lat-20)}°${lat-20>=0?'N':'S'}, Lon: ${Math.abs(lon-30)}°${lon-30>=0?'L':'O'}`;
+    document.getElementById('f-geo-d').value = `Lat: ${Math.abs(lat+10)}°${lat+10>=0?'N':'S'}, Lon: ${Math.abs(lon-20)}°${lon-20>=0?'L':'O'}`;
+  }
+
+  setFeedback('', '');
 }
 
-// Renderizar modo professor
-function renderTeacher() {
-    const regions = Object.keys(gameState.questions);
-    const stats = {};
-    regions.forEach(region => {
-        stats[region] = gameState.questions[region].length;
-    });
+/** Aplicar coordenadas manuais */
+function applyManualCoord() {
+  const lat = parseFloat(document.getElementById('f-lat').value);
+  const lon = parseFloat(document.getElementById('f-lon').value);
+  if (isNaN(lat)||isNaN(lon)||lat<-90||lat>90||lon<-180||lon>180) {
+    setFeedback('Coordenadas inválidas. Lat: -90 a 90, Lon: -180 a 180.', 'err');
+    return;
+  }
+  G.profLat = Math.round(lat);
+  G.profLon = Math.round(lon);
+  document.getElementById('f-lat').value = G.profLat;
+  document.getElementById('f-lon').value = G.profLon;
 
-    return `
-        <div class="teacher-container">
-            <div class="teacher-wrapper">
-                <div class="teacher-card animate-fadeIn">
-                    <div class="teacher-header">
-                        <h2 class="teacher-title">
-                            <span>✏️</span>
-                            Modo Professor - Adicionar Perguntas
-                        </h2>
-                    </div>
+  // Simula clique para posicionar marcador
+  const { x, y } = toPercent(G.profLat, G.profLon);
+  const marker = document.getElementById('prof-marker');
+  marker.style.left = `${x}%`;
+  marker.style.top  = `${y}%`;
+  marker.classList.add('visible');
+  const fLat = `${Math.abs(G.profLat)}°${G.profLat>=0?'N':'S'}`;
+  const fLon = `${Math.abs(G.profLon)}°${G.profLon>=0?'L':'O'}`;
+  document.getElementById('prof-marker-label').textContent = `${fLat}, ${fLon}`;
 
-                    <div class="teacher-content">
-                        <form id="teacherForm" onsubmit="addQuestion(event)">
-                            <div class="form-group">
-                                <label class="form-label">Região do Mundo</label>
-                                <select class="form-select" id="region">
-                                    ${regions.map(region => `<option value="${region}">${region}</option>`).join('')}
-                                </select>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label">Local/Cidade</label>
-                                    <input type="text" class="form-input" id="location" placeholder="Ex: Paris, França" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">País</label>
-                                    <input type="text" class="form-input" id="country" placeholder="Ex: França" required>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label">Posição X (0-100)</label>
-                                    <input type="number" class="form-input" id="coordX" min="0" max="100" value="50" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Posição Y (0-100)</label>
-                                    <input type="number" class="form-input" id="coordY" min="0" max="100" value="50" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Pergunta</label>
-                                <textarea class="form-textarea" id="question" rows="3" placeholder="Digite a pergunta sobre este local..." required></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Opções de Resposta</label>
-                                ${[0, 1, 2, 3].map(idx => `
-                                    <div class="option-row">
-                                        <input type="radio" name="correct" value="${idx}" class="option-radio" ${idx === 0 ? 'checked' : ''} required>
-                                        <input type="text" class="form-input option-input" id="option${idx}" placeholder="Opção ${idx + 1}" required>
-                                    </div>
-                                `).join('')}
-                                <p class="option-hint">✓ Marque a opção correta</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Fato Histórico/Curiosidade</label>
-                                <textarea class="form-textarea" id="fact" rows="3" placeholder="Adicione um fato interessante sobre este local..." required></textarea>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="submit" class="btn-add">
-                                    <span>➕</span>
-                                    Adicionar Pergunta
-                                </button>
-                                <button type="button" class="btn-back" onclick="closeTeacher()">
-                                    Voltar
-                                </button>
-                            </div>
-                        </form>
-
-                        <div class="stats-box">
-                            <h3 class="stats-title">📊 Estatísticas do Banco de Dados</h3>
-                            <div class="stats-grid">
-                                ${regions.map(region => `
-                                    <div class="stat-item">
-                                        <div class="stat-value">${stats[region]}</div>
-                                        <div class="stat-label">${region}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+  const region = detectRegion(G.profLat, G.profLon);
+  if (!document.getElementById('f-region').value) {
+    document.getElementById('f-region').value = region.label;
+  }
+  setFeedback('Coordenadas aplicadas. Preencha as perguntas e salve.', 'ok');
 }
 
-// Iniciar jogo
+/** Salvar ponto */
+function savePoint() {
+  const lat    = parseFloat(document.getElementById('f-lat').value);
+  const lon    = parseFloat(document.getElementById('f-lon').value);
+  const region = document.getElementById('f-region').value.trim();
+  const geoQ   = document.getElementById('f-geo-q').value.trim();
+  const geoA   = document.getElementById('f-geo-a').value.trim();
+  const geoB   = document.getElementById('f-geo-b').value.trim();
+  const geoC   = document.getElementById('f-geo-c').value.trim();
+  const geoD   = document.getElementById('f-geo-d').value.trim();
+  const histQ  = document.getElementById('f-hist-q').value.trim();
+  const histA  = document.getElementById('f-hist-a').value.trim();
+  const histB  = document.getElementById('f-hist-b').value.trim();
+  const histC  = document.getElementById('f-hist-c').value.trim();
+  const histD  = document.getElementById('f-hist-d').value.trim();
+  const fact   = document.getElementById('f-fact').value.trim();
+
+  // Validações
+  if (isNaN(lat)||isNaN(lon)) { setFeedback('Defina o ponto no mapa ou pelas coordenadas primeiro.', 'err'); return; }
+  if (!region)  { setFeedback('Preencha o nome do lugar / região.', 'err'); return; }
+  if (!geoQ || !geoA || !geoB || !geoC || !geoD) { setFeedback('Preencha a pergunta geográfica e todas as 4 opções.', 'err'); return; }
+  if (!histQ || !histA || !histB || !histC || !histD) { setFeedback('Preencha a pergunta histórica e todas as 4 opções.', 'err'); return; }
+
+  const ponto = {
+    id: Date.now(),
+    lat: Math.round(lat),
+    lon: Math.round(lon),
+    region,
+    geo: { q:geoQ,  options:[geoA,geoB,geoC,geoD],  answer:'A', fact },
+    hist:{ q:histQ, options:[histA,histB,histC,histD], answer:'A', fact },
+  };
+
+  PONTOS_PROF.push(ponto);
+  savePontos(PONTOS_PROF);
+  renderProfPanel();
+  clearForm();
+  setFeedback(`✅ Ponto "${region}" salvo com sucesso! Total: ${PONTOS_PROF.length} ponto(s).`, 'ok');
+}
+
+function clearForm() {
+  ['f-lat','f-lon','f-region','f-geo-q','f-geo-a','f-geo-b','f-geo-c','f-geo-d',
+   'f-hist-q','f-hist-a','f-hist-b','f-hist-c','f-hist-d','f-fact'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  G.profLat = null;
+  G.profLon = null;
+  document.getElementById('prof-marker').classList.remove('visible');
+  setFeedback('', '');
+}
+
+function deletePoint(id) {
+  PONTOS_PROF = PONTOS_PROF.filter(p => p.id !== id);
+  savePontos(PONTOS_PROF);
+  renderProfPanel();
+}
+
+function clearAllPoints() {
+  if (!confirm(`Apagar todos os ${PONTOS_PROF.length} pontos salvos?`)) return;
+  PONTOS_PROF = [];
+  savePontos(PONTOS_PROF);
+  renderProfPanel();
+}
+
+function setFeedback(msg, type) {
+  const el = document.getElementById('form-feedback');
+  el.textContent = msg;
+  el.className = `form-feedback ${type}`;
+}
+
+function renderProfPanel() {
+  // Contagem
+  document.getElementById('prof-point-count').textContent = `${PONTOS_PROF.length} ponto(s) salvo(s)`;
+
+  // Pins no mapa
+  const layer = document.getElementById('saved-pins-layer');
+  layer.innerHTML = '';
+  PONTOS_PROF.forEach(p => {
+    const { x, y } = toPercent(p.lat, p.lon);
+    const pin = document.createElement('div');
+    pin.className = 'saved-pin';
+    pin.style.left = `${x}%`;
+    pin.style.top  = `${y}%`;
+    pin.innerHTML = `<div class="saved-pin-dot"></div><div class="saved-pin-tooltip">${esc(p.region)}</div>`;
+    pin.onclick = () => loadPointToForm(p);
+    layer.appendChild(pin);
+  });
+
+  // Lista
+  const list = document.getElementById('saved-points-list');
+  if (!PONTOS_PROF.length) {
+    list.innerHTML = '<div style="font-size:11px;color:var(--text-faint);padding:6px 0">Nenhum ponto salvo ainda.</div>';
+    return;
+  }
+  list.innerHTML = PONTOS_PROF.map(p => `
+    <div class="saved-point-row">
+      <span class="pt-coords">${p.lat}°, ${p.lon}°</span>
+      <span class="pt-name">${esc(p.region)}</span>
+      <span class="pt-del" onclick="deletePoint(${p.id})">✖</span>
+    </div>`).join('');
+}
+
+function loadPointToForm(p) {
+  document.getElementById('f-lat').value    = p.lat;
+  document.getElementById('f-lon').value    = p.lon;
+  document.getElementById('f-region').value = p.region;
+  document.getElementById('f-geo-q').value  = p.geo.q;
+  document.getElementById('f-geo-a').value  = p.geo.options[0];
+  document.getElementById('f-geo-b').value  = p.geo.options[1];
+  document.getElementById('f-geo-c').value  = p.geo.options[2];
+  document.getElementById('f-geo-d').value  = p.geo.options[3];
+  document.getElementById('f-hist-q').value = p.hist.q;
+  document.getElementById('f-hist-a').value = p.hist.options[0];
+  document.getElementById('f-hist-b').value = p.hist.options[1];
+  document.getElementById('f-hist-c').value = p.hist.options[2];
+  document.getElementById('f-hist-d').value = p.hist.options[3];
+  document.getElementById('f-fact').value   = p.geo.fact || '';
+  G.profLat = p.lat;
+  G.profLon = p.lon;
+  applyManualCoord();
+  setFeedback(`Ponto "${p.region}" carregado para edição. Após modificar, salve como novo ponto.`, 'ok');
+}
+
+function exportPoints() {
+  const json = JSON.stringify(PONTOS_PROF, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'geo-historia-pontos.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importPoints(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('Formato inválido');
+      PONTOS_PROF = [...PONTOS_PROF, ...data];
+      savePontos(PONTOS_PROF);
+      renderProfPanel();
+      setFeedback(`✅ ${data.length} ponto(s) importado(s) com sucesso!`, 'ok');
+    } catch { setFeedback('Erro ao importar: arquivo JSON inválido.', 'err'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+/* ─────────────────────────────────────────────────
+   INICIAR JOGO
+───────────────────────────────────────────────── */
 function startGame() {
-    const allQuestions = Object.values(gameState.questions).flat();
-    gameState.players = [];
-    
-    for (let i = 0; i < gameState.numPlayers; i++) {
-        const randomQuestion = allQuestions[Math.floor(Math.random() * allQuestions.length)];
-        gameState.players.push({
-            id: i + 1,
-            name: `Jogador ${i + 1}`,
-            color: PLAYER_COLORS[i % PLAYER_COLORS.length],
-            position: { ...randomQuestion.coords },
-            score: 0,
-            correctAnswers: 0,
-            totalQuestions: 0,
-            location: randomQuestion.location,
-            country: randomQuestion.country
-        });
+  const n = clamp(parseInt(document.getElementById('cfg-players').value)||2, 1, 20);
+  G.totalRounds = clamp(parseInt(document.getElementById('cfg-rounds').value)||10, 1, 20);
+
+  // Modo professor precisa de pontos salvos
+  if (G.mode === 'prof') {
+    if (PONTOS_PROF.length === 0) {
+      alert('Modo Professor: nenhum ponto salvo! Acesse o Painel do Professor e crie pontos de jogo primeiro.');
+      return;
     }
-    
-    gameState.currentPlayer = 0;
-    gameState.screen = 'playing';
-    render();
+    // Embaralha e cria fila
+    G.profPontosQueue = shuffle([...PONTOS_PROF]);
+  }
+
+  G.players = [];
+  for (let i=1;i<=n;i++) {
+    const el = document.getElementById(`pname-${i}`);
+    G.players.push({ id:`P${i}`, name: el?.value.trim()||`Jogador ${i}`, score:0 });
+  }
+  G.currentIdx=0; G.round=1; G.phase='wait';
+  G.usedQ={}; G.gameActive=true;
+
+  showScreen('screen-game');
+  document.getElementById('round-tot').textContent = `/${G.totalRounds}`;
+  document.getElementById('gm-log').innerHTML = '';
+  hideQuiz(); hideMarker();
+  renderScoreboard(); renderDots(); updateTopbar();
+
+  log(`🗺 Expedição iniciada! ${n} explorador(es) · ${G.totalRounds} rodadas · Modo ${G.mode==='auto'?'Automático':'Professor'}`, 'sys');
+  log('💡 /pular pula a pergunta · /dica mostra dica · /status mostra placar', 'sys');
+
+  setTimeout(beginTurn, 700);
 }
 
-// Mover jogador
-function movePlayer() {
-    const allQuestions = Object.values(gameState.questions).flat();
-    const player = gameState.players[gameState.currentPlayer];
-    
-    // Salvar posição anterior para mostrar a rota
-    player.previousPosition = { ...player.position };
-    
-    // Encontrar perguntas próximas (dentro de um raio de distância)
-    const nearbyQuestions = allQuestions.filter(q => {
-        const distance = Math.sqrt(
-            Math.pow(q.coords.x - player.position.x, 2) + 
-            Math.pow(q.coords.y - player.position.y, 2)
-        );
-        return distance <= 30 && distance > 0; // Raio de 30 unidades, mas não a mesma posição
-    });
-    
-    // Se não houver perguntas próximas, permitir qualquer pergunta
-    const availableQuestions = nearbyQuestions.length > 0 ? nearbyQuestions : allQuestions;
-    
-    // Selecionar uma pergunta aleatória das disponíveis
-    const randomQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
-    
-    player.position = { ...randomQuestion.coords };
-    player.location = randomQuestion.location;
-    player.country = randomQuestion.country;
-    
-    gameState.currentQuestion = randomQuestion;
-    gameState.selectedAnswer = null;
-    gameState.showFact = false;
-    gameState.screen = 'question';
-    render();
+function replayGame() { startGame(); }
+
+/* ─────────────────────────────────────────────────
+   TURNOS
+───────────────────────────────────────────────── */
+function beginTurn() {
+  if (G.round > G.totalRounds) { endGame(); return; }
+  setPhase('geo'); updateTopbar(); hideQuiz();
+
+  let lat, lon, regionOverride=null, geoQOverride=null, histQOverride=null;
+
+  if (G.mode==='prof' && G.profPontosQueue.length > 0) {
+    // Usa ponto do professor (cíclico)
+    const idx = ((G.round-1) * G.players.length + G.currentIdx) % G.profPontosQueue.length;
+    const ponto = G.profPontosQueue[idx];
+    lat = ponto.lat; lon = ponto.lon;
+    regionOverride = { id:'prof_'+ponto.id, label: ponto.region };
+    geoQOverride  = ponto.geo;
+    histQOverride = ponto.hist;
+  } else if (G.pendingPos) {
+    lat = G.pendingPos.lat; lon = G.pendingPos.lon;
+    G.pendingPos = null;
+  } else {
+    const c = randomCoord(); lat=c.lat; lon=c.lon;
+  }
+
+  G.lat=lat; G.lon=lon;
+  G.region = regionOverride || detectRegion(lat, lon);
+  G._histQOverride = histQOverride;
+
+  placeMarker(lat, lon);
+
+  const cp = G.players[G.currentIdx];
+  log(`🗺 Rodada ${G.round}/${G.totalRounds} — Vez de ${cp.name}!\nObserve o marcador e responda o quiz geográfico.`);
+
+  // Pergunta geográfica
+  const geoQ = geoQOverride || buildGeoQuiz(lat, lon, G.region.label);
+  G.currentQ = geoQ;
+
+  setTimeout(() => showQuiz(geoQ, handleGeoResult), 350);
 }
 
-// Selecionar resposta
-function selectAnswer(index) {
-    if (!gameState.showFact) {
-        gameState.selectedAnswer = index;
-        render();
-    }
+function handleGeoResult(correct) {
+  const cp = G.players[G.currentIdx];
+  if (correct) {
+    cp.score += 50;
+    renderScoreboard();
+    showFeedback(true, '+50 Pontos!', `Posição correta! Região: ${G.region.label}.\n${cp.name} agora tem ${cp.score} pts.`, G.currentQ.fact||'');
+  } else {
+    const ans = G.currentQ.options[['A','B','C','D'].indexOf(G.currentQ.answer)];
+    showFeedback(false, 'Incorreto', `Resposta correta: ${ans}.`, G.currentQ.fact||'');
+  }
+  setTimeout(askHist, correct?3000:3400);
 }
 
-// Verificar resposta
-function checkAnswer() {
-    const isCorrect = gameState.selectedAnswer === gameState.currentQuestion.correct;
-    const player = gameState.players[gameState.currentPlayer];
-    
-    player.score += isCorrect ? 100 : 0;
-    player.correctAnswers += isCorrect ? 1 : 0;
-    player.totalQuestions += 1;
-    
-    gameState.showFact = true;
-    render();
+function askHist() {
+  setPhase('hist');
+  const cp = G.players[G.currentIdx];
+  const q  = G._histQOverride || pickQ(G.region.id);
+  G._histQOverride = null;
+  G.currentQ = q;
+  log(`🏛 Quiz Histórico — ${G.region.label}\n${cp.name}, responda:`);
+  setTimeout(() => showQuiz(q, handleHistResult), 300);
 }
 
-// Próximo jogador
-function nextPlayer() {
-    gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.numPlayers;
-    gameState.screen = 'playing';
-    gameState.currentQuestion = null;
-    gameState.selectedAnswer = null;
-    gameState.showFact = false;
-    render();
+function handleHistResult(correct) {
+  const cp = G.players[G.currentIdx];
+  if (correct) {
+    cp.score += 50;
+    renderScoreboard();
+    showFeedback(true, '+50 Pontos!', `${cp.name} agora tem ${cp.score} pts.`, G.currentQ.fact||'');
+  } else {
+    const ans = G.currentQ.options[['A','B','C','D'].indexOf(G.currentQ.answer)];
+    showFeedback(false, 'Incorreto', `Resposta correta: ${ans}.`, G.currentQ.fact||'');
+  }
+  G.currentQ = null;
+  setTimeout(advTurn, correct?3400:3800);
 }
 
-// Sair do jogo
-function exitGame() {
-    if (confirm('Deseja realmente sair do jogo?')) {
-        gameState.screen = 'menu';
-        gameState.players = [];
-        gameState.currentPlayer = 0;
-        render();
-    }
+function advTurn() {
+  G.currentIdx++;
+  if (G.currentIdx >= G.players.length) { G.currentIdx=0; G.round++; }
+  if (G.round > G.totalRounds) { endGame(); return; }
+  setPhase('wait'); updateTopbar(); hideQuiz();
+  setTimeout(beginTurn, 500);
 }
 
-// Abrir modo professor
-function openTeacher() {
-    gameState.screen = 'teacher';
-    render();
+/* ─────────────────────────────────────────────────
+   FIM DE JOGO
+───────────────────────────────────────────────── */
+function endGame() {
+  setPhase('end'); G.gameActive=false; hideQuiz();
+  const sorted = [...G.players].sort((a,b)=>b.score-a.score);
+  const medals = ['🥇','🥈','🥉'];
+  document.getElementById('final-rank').innerHTML = sorted.map((p,i)=>`
+    <div class="rank-row ${i===0?'gold':''}">
+      <span class="rank-medal">${medals[i]||''}</span>
+      <span class="rank-pos">${i+1}º</span>
+      <span class="rank-name">${esc(p.id)} · ${esc(p.name)}</span>
+      <span class="rank-pts">${p.score} pts</span>
+    </div>`).join('');
+  setTimeout(()=>showScreen('screen-end'), 600);
 }
 
-// Fechar modo professor
-function closeTeacher() {
-    gameState.screen = 'menu';
-    render();
+/* ─────────────────────────────────────────────────
+   QUIZ UI
+───────────────────────────────────────────────── */
+function showQuiz(q, cb) {
+  document.getElementById('quiz-block').style.display = 'block';
+  document.getElementById('quiz-q').innerHTML = esc(q.q).replace(/\n/g,'<br>');
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-opts').innerHTML = q.options.map((opt,i)=>`
+    <button class="q-opt" data-letter="${letters[i]}" onclick="pickOpt('${letters[i]}',this)">
+      <span class="q-letter">${letters[i]})</span>${esc(opt)}
+    </button>`).join('');
+  window._qCb      = cb;
+  window._qCorrect = q.answer;
+  window._qDone    = false;
 }
 
-// Adicionar pergunta
-function addQuestion(event) {
-    event.preventDefault();
-    
-    const region = document.getElementById('region').value;
-    const location = document.getElementById('location').value;
-    const country = document.getElementById('country').value;
-    const coordX = parseInt(document.getElementById('coordX').value);
-    const coordY = parseInt(document.getElementById('coordY').value);
-    const question = document.getElementById('question').value;
-    const options = [
-        document.getElementById('option0').value,
-        document.getElementById('option1').value,
-        document.getElementById('option2').value,
-        document.getElementById('option3').value
-    ];
-    const correct = parseInt(document.querySelector('input[name="correct"]:checked').value);
-    const fact = document.getElementById('fact').value;
-    
-    const newQuestion = {
-        location,
-        coords: { x: coordX, y: coordY },
-        country,
-        question,
-        options,
-        correct,
-        fact
-    };
-    
-    if (!gameState.questions[region]) {
-        gameState.questions[region] = [];
-    }
-    
-    gameState.questions[region].push(newQuestion);
-    
-    alert('Pergunta adicionada com sucesso!');
-    document.getElementById('teacherForm').reset();
-    render();
+function pickOpt(letter, btn) {
+  if (window._qDone) return;
+  window._qDone = true;
+  const correct = window._qCorrect;
+  document.querySelectorAll('.q-opt').forEach(b => {
+    b.classList.add('disabled');
+    if (b.dataset.letter === correct) b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  const isOk = letter === correct;
+  setTimeout(()=>{ hideQuiz(); if(window._qCb) window._qCb(isOk); }, 1100);
 }
 
-// Iniciar quando a página carregar
-window.addEventListener('DOMContentLoaded', init);
+function hideQuiz() {
+  document.getElementById('quiz-block').style.display='none';
+  document.getElementById('quiz-q').innerHTML='';
+  document.getElementById('quiz-opts').innerHTML='';
+}
+
+/* ─────────────────────────────────────────────────
+   FEEDBACK
+───────────────────────────────────────────────── */
+function showFeedback(ok, title, body, fact, ms=2800) {
+  const wrap = document.getElementById('feedback-wrap');
+  const card = document.getElementById('feedback-card');
+  document.getElementById('fb-icon').textContent  = ok ? '✅' : '❌';
+  document.getElementById('fb-title').textContent = title;
+  document.getElementById('fb-body').textContent  = body;
+  document.getElementById('fb-fact').textContent  = fact ? `💡 ${fact}` : '';
+  document.getElementById('fb-title').style.color = ok ? 'var(--green)' : 'var(--red)';
+  card.className = `feedback-card ${ok?'fb-ok':'fb-err'}`;
+  wrap.classList.add('visible');
+  setTimeout(()=>wrap.classList.remove('visible'), ms);
+}
+
+/* ─────────────────────────────────────────────────
+   MARCADOR DO JOGO
+───────────────────────────────────────────────── */
+function placeMarker(lat, lon) {
+  const {x,y} = toPercent(lat, lon);
+  const m = document.getElementById('game-marker');
+  m.style.left = `${x}%`;
+  m.style.top  = `${y}%`;
+  m.classList.add('visible');
+  document.getElementById('gm-label').textContent = G.players[G.currentIdx]?.id||'';
+  const fLat = `${Math.abs(lat)}°${lat>=0?'N':'S'}`;
+  const fLon = `${Math.abs(lon)}°${lon>=0?'L':'O'}`;
+  const b1=document.getElementById('badge-lat');
+  const b2=document.getElementById('badge-lon');
+  const b3=document.getElementById('badge-region');
+  b1.textContent=`LAT: ${fLat}`; b1.classList.add('lit');
+  b2.textContent=`LON: ${fLon}`; b2.classList.add('lit');
+  b3.textContent=G.region?.label||'–';
+}
+
+function hideMarker() {
+  document.getElementById('game-marker').classList.remove('visible');
+  ['badge-lat','badge-lon'].forEach(id=>{ const el=document.getElementById(id); el.textContent='LAT: –'; el.classList.remove('lit'); });
+  document.getElementById('badge-lat').textContent='LAT: –';
+  document.getElementById('badge-lon').textContent='LON: –';
+  document.getElementById('badge-region').textContent='–';
+}
+
+/* ─────────────────────────────────────────────────
+   LOG DO GM
+───────────────────────────────────────────────── */
+function log(text, type='narrator') {
+  const c = document.getElementById('gm-log');
+  const d = document.createElement('div');
+  const clsMap = { narrator:'narrator', sys:'system-log', cmd:'cmd-log' };
+  d.className = `log-entry ${clsMap[type]||type}`;
+  if (type==='narrator') d.innerHTML = `<div class="log-from">✦ Mestre de Jogo</div>${esc(text).replace(/\n/g,'<br>')}`;
+  else d.innerHTML = esc(text).replace(/\n/g,'<br>');
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+
+/* ─────────────────────────────────────────────────
+   COMANDOS
+───────────────────────────────────────────────── */
+function doCmd() {
+  const inp = document.getElementById('cmd-in');
+  const raw = inp.value.trim();
+  if (!raw) return;
+  inp.value = '';
+  if (!raw.startsWith('/')) { log(`ℹ Use os botões do quiz para responder, ou comandos com /.`, 'sys'); return; }
+  log(raw, 'cmd');
+  const parts = raw.split(/\s+/);
+  const cmd   = parts[0].toLowerCase();
+
+  if (cmd==='/set_pos') {
+    const lat=parseInt(parts[1]), lon=parseInt(parts[2]);
+    if (isNaN(lat)||isNaN(lon)||lat<-90||lat>90||lon<-180||lon>180) { log('⚠ Uso: /set_pos [Lat] [Lon]  ex: /set_pos -10 -50', 'sys'); return; }
+    G.pendingPos = { lat:Math.round(lat), lon:Math.round(lon) };
+    log(`📍 Próxima posição definida: ${lat}°, ${lon}°`, 'sys');
+    if (G.phase==='wait' && G.gameActive) beginTurn();
+    return;
+  }
+
+  if (cmd==='/status') {
+    const r = [...G.players].sort((a,b)=>b.score-a.score).map((p,i)=>`${i+1}º ${p.name}: ${p.score}pts`).join(' · ');
+    log(`📊 ${r} | Rodada ${G.round}/${G.totalRounds}`, 'sys'); return;
+  }
+
+  if (cmd==='/pular') {
+    if (G.phase==='geo') { log('⏭ Quiz geográfico pulado.','sys'); hideQuiz(); setTimeout(askHist,300); }
+    else if (G.phase==='hist') { log('⏭ Quiz histórico pulado.','sys'); hideQuiz(); setTimeout(advTurn,300); }
+    else log('⚠ Nenhum quiz ativo.','sys');
+    return;
+  }
+
+  if (cmd==='/dica') {
+    if (G.currentQ?.fact) log(`💡 Curiosidade: ${G.currentQ.fact}`,'sys');
+    else if (G.region) log(`💡 Região: ${G.region.label}`,'sys');
+    else log('⚠ Nenhuma dica disponível.','sys');
+    return;
+  }
+
+  log(`⚠ Comando desconhecido: "${cmd}". Use: /set_pos · /status · /pular · /dica`, 'sys');
+}
+
+/* ─────────────────────────────────────────────────
+   RENDERIZAÇÃO DE UI DO JOGO
+───────────────────────────────────────────────── */
+function renderScoreboard() {
+  document.getElementById('scoreboard').innerHTML = G.players.map((p,i)=>`
+    <div class="score-row ${i===G.currentIdx?'active':''}">
+      <span class="sc-pid">${p.id}</span>
+      <span class="sc-name">${esc(p.name)}</span>
+      <span class="sc-pts">${p.score}</span>
+    </div>`).join('');
+}
+
+function renderDots() {
+  document.getElementById('round-dots').innerHTML = Array.from({length:G.totalRounds},(_,i)=>{
+    const c = i+1<G.round?'done':i+1===G.round?'current':'';
+    return `<div class="r-dot ${c}"></div>`;
+  }).join('');
+}
+
+function updateTopbar() {
+  document.getElementById('round-num').textContent = G.round;
+  document.getElementById('turn-player').textContent = G.players[G.currentIdx]?.name||'–';
+  renderDots(); renderScoreboard();
+}
+
+function setPhase(p) {
+  G.phase=p;
+  const el=document.getElementById('phase-tag');
+  const map={wait:'AGUARDANDO',geo:'QUIZ GEO',hist:'QUIZ HIST.',end:'FIM'};
+  el.className=`phase-tag ${p}`; el.textContent=map[p]||p;
+}
+
+/* ─────────────────────────────────────────────────
+   SELEÇÃO DE PERGUNTAS DO BANCO
+───────────────────────────────────────────────── */
+function pickQ(regionId) {
+  // Tenta banco da região, depois region pai, depois oceano
+  const candidates = [regionId, regionId.replace(/_[^_]+$/,''), 'oceano'];
+  let pool = null;
+  for (const id of candidates) {
+    if (QB[id] && QB[id].length > 0) { pool=QB[id]; break; }
+  }
+  if (!pool) pool = QB['oceano'];
+
+  if (!G.usedQ[regionId]) G.usedQ[regionId]=new Set();
+  const used=G.usedQ[regionId];
+  if (used.size>=pool.length) used.clear();
+  let idx;
+  do { idx=Math.floor(Math.random()*pool.length); } while(used.has(idx));
+  used.add(idx);
+  return pool[idx];
+}
+
+/* ─────────────────────────────────────────────────
+   QUIZ GEOGRÁFICO (automático quando não há ponto professor)
+───────────────────────────────────────────────── */
+function buildGeoQuiz(lat, lon, regionLabel) {
+  const fLat = v => `${Math.abs(v)}°${v>=0?'N':'S'}`;
+  const fLon = v => `${Math.abs(v)}°${v>=0?'L':'O'}`;
+  const correct = `Lat: ${fLat(lat)}, Lon: ${fLon(lon)}`;
+  const wrongs = [
+    `Lat: ${fLat(lat+20)}, Lon: ${fLon(lon+30)}`,
+    `Lat: ${fLat(lat-20)}, Lon: ${fLon(lon-30)}`,
+    `Lat: ${fLat(lat+10)}, Lon: ${fLon(lon-20)}`,
+  ].map(s=>s.replace('Lat: -0°','Lat: 0°'));
+  const opts = shuffle([correct,...wrongs]);
+  const ansIdx = opts.indexOf(correct);
+  return {
+    q:`Qual é a Latitude e Longitude do marcador?\nRegião: ${regionLabel}`,
+    options:opts,
+    answer:['A','B','C','D'][ansIdx],
+    fact:`A posição exata é Lat ${fLat(lat)}, Lon ${fLon(lon)} — ${regionLabel}.`,
+  };
+}
+
+/* ─────────────────────────────────────────────────
+   UTILITÁRIOS
+───────────────────────────────────────────────── */
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(a){return[...a].sort(()=>Math.random()-0.5);}
+
+function randomCoord(){
+  const lats=[-50,-40,-30,-20,-10,0,10,20,30,40,50,60];
+  return {
+    lat:lats[Math.floor(Math.random()*lats.length)],
+    lon:clamp(Math.round((Math.random()*340-170)/10)*10,-170,170),
+  };
+}
+
+/* ─────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded',()=>{
+  showScreen('screen-menu');
+  document.getElementById('cmd-in').addEventListener('keydown',e=>{
+    if(e.key==='Enter') doCmd();
+  });
+});
