@@ -10,334 +10,448 @@
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════
-     TELA 1: MENU PRINCIPAL
-═══════════════════════════════════════════ -->
-<div class="screen active" id="screen-menu">
-  <div class="menu-wrap">
-    <div class="menu-hero">
-      <div class="hero-compass">🧭</div>
-      <h1 class="hero-title">Geo-História</h1>
-      <p class="hero-sub">Simulador de Exploração Cartográfica Educativa</p>
-      <span class="hero-badge">Uso Didático Livre · Sem Internet · v3.0</span>
+<!-- ═══════════════════════ TELA 1: MENU ═══════════════════════ -->
+<div class="tela ativa" id="tela-menu">
+  <div class="menu-centro">
+
+    <div class="logo-bloco">
+      <span class="logo-bussola">🧭</span>
+      <h1 class="logo-titulo">Explorador Mundial</h1>
+      <p class="logo-sub">Simulador  de Exploração Cartográfica Educativa</p>
+      <span class="logo-badge">Uso Didático Livre · Offline · v2.0</span>
     </div>
 
     <div class="menu-card">
-      <div class="card-section-label">Configurar Partida</div>
+      <div class="rotulo-secao">Configurar Partida</div>
 
-      <div class="field-row">
-        <div class="field">
+      <div class="grade-2">
+        <div class="campo">
           <label>Jogadores <small>(1–20)</small></label>
-          <input type="number" id="cfg-players" min="1" max="20" value="2">
+          <input type="number" id="cfg-jogadores" min="1" max="20" value="2">
         </div>
-        <div class="field">
+        <div class="campo">
           <label>Rodadas <small>(1–20)</small></label>
-          <input type="number" id="cfg-rounds" min="1" max="20" value="10">
+          <input type="number" id="cfg-rodadas" min="1" max="20" value="10">
         </div>
       </div>
 
-      <div class="field">
+      <div class="campo">
         <label>Nomes dos Jogadores</label>
-        <div class="names-grid" id="names-grid"></div>
+        <div class="grade-nomes" id="grade-nomes"></div>
       </div>
 
-      <div class="field">
-        <label>Modo de Início</label>
-        <div class="mode-row">
-          <button class="mode-btn active" id="btn-mode-auto" onclick="setMode('auto')">
-            <span class="mode-ico">⚔️</span>
-            <strong>Automático</strong>
-            <span>Pontos sorteados pelo sistema</span>
-          </button>
-          <button class="mode-btn" id="btn-mode-prof" onclick="setMode('prof')">
-            <span class="mode-ico">🗺️</span>
-            <strong>Professor</strong>
-            <span>Você define os pontos e as perguntas</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="menu-actions">
-        <button class="btn-play" onclick="startGame()">⚓ Iniciar Expedição</button>
-        <button class="btn-secondary" onclick="showScreen('screen-professor')">⚙ Painel do Professor</button>
+      <div class="menu-acoes">
+        <button class="btn-primario" onclick="iniciarJogo()"> Iniciar Jogo</button>
+        <button class="btn-contorno" onclick="mostrarTela('tela-professor')">⚙ Painel do Professor</button>
       </div>
     </div>
 
-    <p class="menu-credit">Desenvolvido para uso educativo livre · Professores de Geografia e História</p>
+    <p class="menu-rodape">Desenvolvido para uso educativo · Professores de Geografia e História</p>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     TELA 2: PAINEL DO PROFESSOR
-═══════════════════════════════════════════ -->
-<div class="screen" id="screen-professor">
-  <div class="prof-layout">
 
-    <!-- Cabeçalho -->
-    <div class="prof-topbar">
-      <button class="btn-back" onclick="showScreen('screen-menu')">← Voltar ao Menu</button>
-      <h2 class="prof-title">⚙ Painel do Professor</h2>
-      <div class="prof-actions">
-        <span id="prof-point-count" class="point-count-badge">0 pontos salvos</span>
-        <button class="btn-danger-sm" onclick="clearAllPoints()">🗑 Limpar Tudo</button>
-      </div>
+<!-- ═══════════════════════ TELA 2: PROFESSOR ═══════════════════════ -->
+<div class="tela" id="tela-professor">
+
+  <div class="prof-barra">
+    <button class="btn-voltar" onclick="mostrarTela('tela-menu')">← Voltar</button>
+    <h2 class="prof-barra-titulo">⚙ Painel do Professor</h2>
+    <div class="prof-barra-direita">
+      <span class="badge-contagem" id="badge-contagem">0 pontos</span>
+      <button class="btn-perigo" onclick="limparTudo()">🗑 Limpar tudo</button>
     </div>
+  </div>
 
-    <!-- Instruções -->
-    <div class="prof-instructions">
-      <strong>Como usar:</strong>
-      Clique em qualquer lugar do mapa para posicionar um ponto de jogo, ou digite as coordenadas manualmente. Depois preencha as perguntas e salve. Os pontos ficam salvos no navegador.
-    </div>
+  <div class="prof-dica">
+    🖱 Passe o mouse pelo mapa para ver o local · Clique para selecionar · Preencha as perguntas e salve
+  </div>
 
-    <div class="prof-body">
+  <div class="prof-corpo">
 
-      <!-- MAPA DO PROFESSOR (clicável) -->
-      <div class="prof-map-section">
-        <div class="prof-map-label">🖱 Clique no mapa para definir o ponto</div>
-        <div class="prof-map-wrap" id="prof-map-wrap">
-          <img src="worldmap.png" alt="Mapa" id="prof-map-img" draggable="false" onclick="handleMapClick(event)">
-          <!-- Marcador temporário -->
-          <div class="prof-marker" id="prof-marker">
-            <div class="prof-marker-dot"></div>
-            <div class="prof-marker-label" id="prof-marker-label">?</div>
-          </div>
-          <!-- Pontos salvos renderizados no mapa -->
-          <div id="saved-pins-layer"></div>
-        </div>
-        <!-- Lista de pontos salvos -->
-        <div class="saved-points-list" id="saved-points-list"></div>
+    <!-- Coluna esquerda: mapa -->
+    <div class="prof-esquerda">
+
+      <div class="mapa-hover-info">
+        <span class="hover-regiao" id="hover-regiao">–</span>
+        <span class="hover-coords" id="hover-coords">Passe o mouse pelo mapa</span>
       </div>
 
-      <!-- FORMULÁRIO DE PONTO -->
-      <div class="prof-form-section">
-        <div class="form-panel">
-          <div class="form-panel-title">📍 Definir Ponto</div>
+      <div class="prof-mapa-caixa" id="prof-mapa-caixa"
+           onmousemove="mapaHover(event)"
+           onmouseleave="mapaSair()"
+           onclick="mapaClicar(event)">
+        <img src="mapa.png" id="prof-mapa-img" alt="Mapa" draggable="false">
 
-          <!-- Coordenadas manuais -->
-          <div class="coord-manual-row">
-            <div class="field">
-              <label>Latitude <small>(-90 a 90)</small></label>
-              <input type="number" id="f-lat" min="-90" max="90" step="1" placeholder="ex: -10">
-            </div>
-            <div class="field">
-              <label>Longitude <small>(-180 a 180)</small></label>
-              <input type="number" id="f-lon" min="-180" max="180" step="1" placeholder="ex: -50">
-            </div>
-            <button class="btn-apply-coord" onclick="applyManualCoord()">Aplicar</button>
-          </div>
-
-          <div class="field">
-            <label>Nome do Lugar / Região <small>(ex: "Brasil Central")</small></label>
-            <input type="text" id="f-region" placeholder="Ex: Grécia Antiga, Amazônia, Sahel...">
-          </div>
-
-          <div class="divider-label">📌 Pergunta Geográfica (Quiz com 4 opções)</div>
-
-          <div class="field">
-            <label>Enunciado da Pergunta Geográfica</label>
-            <textarea id="f-geo-q" rows="2" placeholder="Ex: Qual é a latitude e longitude desta posição?"></textarea>
-          </div>
-          <div class="options-grid">
-            <div class="field opt-field">
-              <label class="opt-label correct-label">✅ A) Resposta Correta</label>
-              <input type="text" id="f-geo-a" placeholder="Resposta correta">
-            </div>
-            <div class="field opt-field">
-              <label class="opt-label">B) Alternativa</label>
-              <input type="text" id="f-geo-b" placeholder="Errada 1">
-            </div>
-            <div class="field opt-field">
-              <label class="opt-label">C) Alternativa</label>
-              <input type="text" id="f-geo-c" placeholder="Errada 2">
-            </div>
-            <div class="field opt-field">
-              <label class="opt-label">D) Alternativa</label>
-              <input type="text" id="f-geo-d" placeholder="Errada 3">
-            </div>
-          </div>
-
-          <div class="divider-label">🏛 Pergunta Histórica (Quiz com 4 opções)</div>
-
-          <div class="field">
-            <label>Enunciado da Pergunta Histórica</label>
-            <textarea id="f-hist-q" rows="2" placeholder="Ex: Qual civilização surgiu nesta região?"></textarea>
-          </div>
-          <div class="options-grid">
-            <div class="field opt-field">
-              <label class="opt-label correct-label">✅ A) Resposta Correta</label>
-              <input type="text" id="f-hist-a" placeholder="Resposta correta">
-            </div>
-            <div class="field opt-field">
-              <label class="opt-label">B) Alternativa</label>
-              <input type="text" id="f-hist-b" placeholder="Errada 1">
-            </div>
-            <div class="field opt-field">
-              <label class="opt-label">C) Alternativa</label>
-              <input type="text" id="f-hist-c" placeholder="Errada 2">
-            </div>
-            <div class="field opt-field">
-              <label class="opt-label">D) Alternativa</label>
-              <input type="text" id="f-hist-d" placeholder="Errada 3">
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Curiosidade / Fato Extra <small>(opcional, exibido após resposta)</small></label>
-            <textarea id="f-fact" rows="2" placeholder="Ex: A Grécia Antiga foi o berço da democracia ocidental..."></textarea>
-          </div>
-
-          <div class="form-buttons">
-            <button class="btn-save-point" onclick="savePoint()">💾 Salvar Ponto</button>
-            <button class="btn-clear-form" onclick="clearForm()">✖ Limpar Formulário</button>
-          </div>
-
-          <div class="form-feedback" id="form-feedback"></div>
+        <div class="marcador-edicao" id="marcador-edicao">
+          <div class="marcador-ponto"></div>
+          <div class="marcador-texto" id="marcador-texto"></div>
         </div>
 
-        <!-- Exportar / Importar -->
-        <div class="form-panel" style="margin-top:10px">
-          <div class="form-panel-title">📤 Exportar / Importar Pontos</div>
-          <div class="export-row">
-            <button class="btn-secondary" onclick="exportPoints()">📥 Exportar JSON</button>
-            <label class="btn-secondary import-label">
-              📤 Importar JSON
-              <input type="file" id="import-file" accept=".json" onchange="importPoints(event)" style="display:none">
+        <div id="camada-pins"></div>
+      </div>
+
+      <div class="lista-pontos-caixa">
+        <div class="lista-pontos-cabecalho">
+          <span>Pontos salvos</span>
+          <div class="lista-pontos-acoes">
+            <button class="btn-pequeno" onclick="mostrarBackup()">💾 Fazer backup</button>
+            <label class="btn-pequeno">
+              📂 Restaurar
+              <input type="file" id="arquivo-restaurar" accept=".json" onchange="restaurarBackup(event)" style="display:none">
             </label>
           </div>
-          <p class="export-hint">Salve seus pontos em arquivo JSON para compartilhar com outros professores ou usar em outros dispositivos.</p>
+        </div>
+        <div class="lista-pontos" id="lista-pontos">
+          <p class="msg-vazia">Nenhum ponto ainda. Clique no mapa para começar.</p>
         </div>
       </div>
+    </div>
+
+    <!-- Coluna direita: formulário -->
+    <div class="prof-direita">
+      <div class="form-card">
+        <div class="form-card-titulo">📍 Novo Ponto de Jogo</div>
+
+        <!-- Preview das coordenadas -->
+        <div class="coords-preview">
+          <div class="coord-item">
+            <span class="coord-rotulo">Latitude</span>
+            <span class="coord-valor" id="prev-lat">–</span>
+          </div>
+          <div class="coord-item">
+            <span class="coord-rotulo">Longitude</span>
+            <span class="coord-valor" id="prev-lon">–</span>
+          </div>
+          <div class="coord-item">
+            <span class="coord-rotulo">Região detectada</span>
+            <span class="coord-valor destaque-ouro" id="prev-regiao">–</span>
+          </div>
+        </div>
+
+        <!-- Coordenada manual -->
+        <div class="coord-manual">
+          <details>
+            <summary>Digitar coordenadas manualmente</summary>
+            <div class="coord-manual-corpo">
+              <div class="grade-2">
+                <div class="campo">
+                  <label>Latitude <small>(-90 a 90)</small></label>
+                  <input type="number" id="f-lat" min="-90" max="90" placeholder="ex: -15">
+                </div>
+                <div class="campo">
+                  <label>Longitude <small>(-180 a 180)</small></label>
+                  <input type="number" id="f-lon" min="-180" max="180" placeholder="ex: -47">
+                </div>
+              </div>
+              <button class="btn-aplicar" onclick="aplicarCoord()">Aplicar</button>
+            </div>
+          </details>
+        </div>
+
+        <div class="campo">
+          <label>Nome do Local <small>(ex: Atenas, Brasil Central, Saara)</small></label>
+          <input type="text" id="f-nome" placeholder="Nome do lugar ou região">
+        </div>
+
+        <!-- Pergunta Geográfica -->
+        <div class="bloco-pergunta">
+          <div class="bloco-titulo geo">🌐 Pergunta Geográfica</div>
+          <div class="campo">
+            <label>Pergunta</label>
+            <textarea id="f-geo-q" rows="2" placeholder="Ex: Em qual país ou região está este ponto?"></textarea>
+          </div>
+          <div class="opts-editor">
+            <div class="opts-editor-hint">Marque ✅ na opção que for a <strong>resposta correta</strong></div>
+            <div class="opt-editor-row">
+              <label class="opt-radio-lbl" title="Marcar como correta">
+                <input type="radio" name="geo-correta" value="a" id="geo-ok-a">
+                <span class="opt-radio-check">✅</span>
+              </label>
+              <span class="opt-letra-tag">A</span>
+              <input type="text" id="f-geo-a" placeholder="Opção A" class="opt-texto">
+            </div>
+            <div class="opt-editor-row">
+              <label class="opt-radio-lbl" title="Marcar como correta">
+                <input type="radio" name="geo-correta" value="b" id="geo-ok-b">
+                <span class="opt-radio-check">✅</span>
+              </label>
+              <span class="opt-letra-tag">B</span>
+              <input type="text" id="f-geo-b" placeholder="Opção B" class="opt-texto">
+            </div>
+            <div class="opt-editor-row">
+              <label class="opt-radio-lbl" title="Marcar como correta">
+                <input type="radio" name="geo-correta" value="c" id="geo-ok-c">
+                <span class="opt-radio-check">✅</span>
+              </label>
+              <span class="opt-letra-tag">C</span>
+              <input type="text" id="f-geo-c" placeholder="Opção C" class="opt-texto">
+            </div>
+            <div class="opt-editor-row">
+              <label class="opt-radio-lbl" title="Marcar como correta">
+                <input type="radio" name="geo-correta" value="d" id="geo-ok-d">
+                <span class="opt-radio-check">✅</span>
+              </label>
+              <span class="opt-letra-tag">D</span>
+              <input type="text" id="f-geo-d" placeholder="Opção D" class="opt-texto">
+            </div>
+          </div>
+        </div>
+
+        <!-- Pergunta Histórica -->
+        <div class="bloco-pergunta">
+          <div class="bloco-titulo hist">🏛 Pergunta Histórica</div>
+          <div class="campo">
+            <label>Pergunta</label>
+            <textarea id="f-hist-q" rows="2" placeholder="Ex: Qual civilização surgiu nesta região?"></textarea>
+          </div>
+          <div class="opts-editor">
+            <div class="opts-editor-hint">Marque ✅ na opção que for a <strong>resposta correta</strong></div>
+            <div class="opt-editor-row">
+              <label class="opt-radio-lbl" title="Marcar como correta">
+                <input type="radio" name="hist-correta" value="a" id="hist-ok-a">
+                <span class="opt-radio-check">✅</span>
+              </label>
+              <span class="opt-letra-tag">A</span>
+              <input type="text" id="f-hist-a" placeholder="Opção A" class="opt-texto">
+            </div>
+            <div class="opt-editor-row">
+              <label class="opt-radio-lbl" title="Marcar como correta">
+                <input type="radio" name="hist-correta" value="b" id="hist-ok-b">
+                <span class="opt-radio-check">✅</span>
+              </label>
+              <span class="opt-letra-tag">B</span>
+              <input type="text" id="f-hist-b" placeholder="Opção B" class="opt-texto">
+            </div>
+            <div class="opt-editor-row">
+              <label class="opt-radio-lbl" title="Marcar como correta">
+                <input type="radio" name="hist-correta" value="c" id="hist-ok-c">
+                <span class="opt-radio-check">✅</span>
+              </label>
+              <span class="opt-letra-tag">C</span>
+              <input type="text" id="f-hist-c" placeholder="Opção C" class="opt-texto">
+            </div>
+            <div class="opt-editor-row">
+              <label class="opt-radio-lbl" title="Marcar como correta">
+                <input type="radio" name="hist-correta" value="d" id="hist-ok-d">
+                <span class="opt-radio-check">✅</span>
+              </label>
+              <span class="opt-letra-tag">D</span>
+              <input type="text" id="f-hist-d" placeholder="Opção D" class="opt-texto">
+            </div>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label>Curiosidade <small>(opcional — aparece após a resposta)</small></label>
+          <textarea id="f-curiosidade" rows="2" placeholder="Ex: A Grécia foi o berço da democracia..."></textarea>
+        </div>
+
+        <div class="form-acoes">
+          <button class="btn-primario" onclick="salvarPonto()">💾 Salvar Ponto</button>
+          <button class="btn-contorno" onclick="limparFormulario()">✖ Limpar</button>
+        </div>
+
+        <div class="form-mensagem" id="form-mensagem"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ TELA 3: BACKUP ═══════════════════════ -->
+<div class="tela" id="tela-backup">
+  <div class="backup-centro">
+    <div class="backup-card">
+      <button class="btn-voltar" onclick="mostrarTela('tela-professor')" style="margin-bottom:16px">← Voltar ao Painel</button>
+
+      <div class="backup-icone">💾</div>
+      <h2 class="backup-titulo">Fazer Backup das Perguntas</h2>
+      <p class="backup-sub">Salve suas perguntas em um arquivo no computador para não perder nada.</p>
+
+      <div class="backup-explicacao">
+        <div class="passo">
+          <span class="passo-num">1</span>
+          <div>
+            <strong>O que é o backup?</strong>
+            <p>É uma cópia de todas as perguntas que você criou, salva como um arquivo no seu computador. Funciona como guardar um documento do Word.</p>
+          </div>
+        </div>
+        <div class="passo">
+          <span class="passo-num">2</span>
+          <div>
+            <strong>Por que fazer backup?</strong>
+            <p>As perguntas ficam salvas no navegador. Se você limpar os dados do navegador ou usar outro computador, pode perder tudo. O backup garante que suas perguntas fiquem seguras.</p>
+          </div>
+        </div>
+        <div class="passo">
+          <span class="passo-num">3</span>
+          <div>
+            <strong>Como restaurar?</strong>
+            <p>No Painel do Professor, clique em "Restaurar" e selecione o arquivo baixado. Todas as perguntas voltarão automaticamente.</p>
+          </div>
+        </div>
+        <div class="passo">
+          <span class="passo-num">4</span>
+          <div>
+            <strong>Posso compartilhar com outros professores?</strong>
+            <p>Sim! Envie o arquivo por e-mail ou WhatsApp. O colega clica em "Restaurar" e terá as mesmas perguntas.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="backup-stats" id="backup-stats"></div>
+
+      <button class="btn-primario" onclick="baixarBackup()" style="width:100%;margin-top:16px;padding:14px;font-size:15px">
+        ⬇ Baixar arquivo de backup agora
+      </button>
+
+      <p class="backup-nota">O arquivo será salvo em Downloads com o nome <strong>geo-historia-backup.json</strong></p>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     TELA 3: JOGO
-═══════════════════════════════════════════ -->
-<div class="screen" id="screen-game">
 
-  <!-- TOPBAR -->
-  <div class="game-topbar">
-    <div class="topbar-left">
-      <button class="btn-back" onclick="confirmBack()">← Menu</button>
-      <span class="game-brand">⚓ Geo-História</span>
-    </div>
-    <div class="topbar-center">
-      <div class="round-block">
-        <span class="round-lbl">RODADA</span>
-        <span class="round-num" id="round-num">1</span>
-        <span class="round-tot" id="round-tot">/10</span>
+<!-- ═══════════════════════ TELA 4: JOGO ═══════════════════════ -->
+<div class="tela" id="tela-jogo">
+
+  <!-- Barra superior -->
+  <div class="jogo-barra">
+    <button class="btn-voltar" onclick="confirmarVoltar()">← Menu</button>
+
+    <div class="jogo-barra-centro">
+      <div class="rodada-info">
+        Rodada
+        <span class="rodada-numero" id="num-rodada">1</span><span class="rodada-total" id="tot-rodada">/10</span>
       </div>
-      <div class="round-dots" id="round-dots"></div>
+      <div class="pontos-rodada" id="pontos-rodada"></div>
     </div>
-    <div class="topbar-right">
-      <span class="phase-tag wait" id="phase-tag">AGUARDANDO</span>
-      <span class="turn-info">Vez de: <strong id="turn-player">–</strong></span>
+
+    <div class="jogo-barra-direita">
+      <span class="badge-fase aguardando" id="badge-fase">AGUARDANDO</span>
+      <span class="vez-de">Vez de <strong id="vez-jogador">–</strong></span>
     </div>
   </div>
 
-  <!-- CORPO DO JOGO -->
-  <div class="game-body">
+  <!-- Placar horizontal -->
+  <div class="placar-barra" id="placar-barra"></div>
 
-    <!-- MAPA -->
-    <div class="game-map-section">
-      <div class="game-map-header">
-        <span class="map-label-txt">🌍 Mapa-Múndi — Projeção Equirretangular</span>
-        <div class="coord-badges">
-          <span class="coord-badge" id="badge-lat">LAT: –</span>
-          <span class="coord-badge" id="badge-lon">LON: –</span>
-          <span class="coord-badge region-badge" id="badge-region">–</span>
-        </div>
+  <!-- Corpo: mapa + painel do quiz lado a lado -->
+  <div class="jogo-corpo">
+
+    <!-- Área do mapa -->
+    <div class="jogo-mapa-area" id="jogo-mapa-area">
+      <img src="mapa.png" class="jogo-mapa-img" alt="Mapa" draggable="false">
+
+      <!-- Marcador do jogador -->
+      <div class="marcador-jogo" id="marcador-jogo">
+        <div class="marcador-anel"></div>
+        <div class="marcador-centro"></div>
+        <div class="marcador-mira horizontal"></div>
+        <div class="marcador-mira vertical"></div>
+        <div class="marcador-etiqueta" id="marcador-etiqueta"></div>
       </div>
-      <div class="game-map-wrap" id="game-map-wrap">
-        <img src="worldmap.png" alt="Mapa" class="game-map-img" draggable="false">
-        <div class="game-marker" id="game-marker">
-          <div class="gm-pulse"></div>
-          <div class="gm-dot"></div>
-          <div class="gm-cross gm-cross-h"></div>
-          <div class="gm-cross gm-cross-v"></div>
-          <div class="gm-label" id="gm-label"></div>
-        </div>
-      </div>
-      <div class="map-legend-bar">
-        <span><span class="leg-dot red"></span>Posição atual</span>
-        <span>·</span>
-        <span>Equador e Trópicos marcados no mapa</span>
-        <span>·</span>
-        <span>Tolerância: ±10° nas respostas</span>
+
+      <!-- Aviso de countdown antes do quiz -->
+      <div class="aviso-observar" id="aviso-observar">
+        Observe o marcador no mapa — pergunta em
+        <span class="aviso-countdown" id="aviso-countdown">5</span>s
       </div>
     </div>
 
-    <!-- PAINEL LATERAL -->
-    <div class="game-sidebar">
+    <!-- Painel do quiz (ao lado do mapa) -->
+    <div class="quiz-painel" id="quiz-painel">
 
-      <!-- Placar -->
-      <div class="sidebar-box">
-        <div class="sidebar-title">🏆 Placar</div>
-        <div id="scoreboard"></div>
+      <div class="quiz-painel-cabecalho">
+        <span class="quiz-tipo-badge geo" id="quiz-tipo-badge">📍 Quiz Geográfico</span>
+        <div class="quiz-jogador-nome" id="quiz-jogador-nome"></div>
       </div>
 
-      <!-- GM e Quiz -->
-      <div class="sidebar-box gm-box">
-        <div class="sidebar-title gm-color">✦ Mestre de Jogo</div>
-        <div class="gm-log" id="gm-log"></div>
-
-        <div class="quiz-block" id="quiz-block" style="display:none">
-          <div class="quiz-q" id="quiz-q"></div>
-          <div class="quiz-opts" id="quiz-opts"></div>
+      <div class="quiz-painel-corpo" id="quiz-painel-corpo">
+        <!-- Estado inicial -->
+        <div class="quiz-aguardando" id="quiz-aguardando">
+          <div class="quiz-aguardando-icone">🗺</div>
+          <p>Aguardando início do turno...</p>
         </div>
 
-        <div class="cmd-row">
-          <input class="cmd-in" id="cmd-in"
-            placeholder="/set_pos · /status · /pular · /dica"
-            onkeydown="if(event.key==='Enter')doCmd()">
-          <button class="btn-cmd" onclick="doCmd()">▶</button>
-        </div>
-        <p class="cmd-hint">/set_pos [Lat] [Lon] · /status · /pular · /dica</p>
+        <!-- Enunciado (oculto até ter quiz) -->
+        <div class="quiz-enunciado" id="quiz-enunciado" style="display:none"></div>
+
+        <!-- Opções -->
+        <div class="quiz-opcoes" id="quiz-opcoes" style="display:none"></div>
+
+        <!-- Resultado -->
+        <div class="quiz-resultado" id="quiz-resultado"></div>
+
+        <!-- Curiosidade -->
+        <div class="quiz-curiosidade" id="quiz-curiosidade"></div>
       </div>
+
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     TELA 4: FIM DE JOGO
-═══════════════════════════════════════════ -->
-<div class="screen" id="screen-end">
-  <div class="end-wrap">
-    <div class="end-trophy">🏆</div>
-    <h2 class="end-title">Fim de Jogo!</h2>
-    <p class="end-sub">Parabéns a todos os exploradores!</p>
-    <div class="final-rank" id="final-rank"></div>
-    <div class="end-btns">
-      <button class="btn-play" onclick="showScreen('screen-menu')">🏠 Menu Principal</button>
-      <button class="btn-secondary" onclick="replayGame()">🔄 Jogar Novamente</button>
+
+<!-- ═══════════════════════ TELA 5: FIM ═══════════════════════ -->
+<div class="tela" id="tela-fim">
+  <div class="fim-centro">
+    <div class="fim-trofeu">🏆</div>
+    <h2 class="fim-titulo">Fim de Jogo!</h2>
+    <p class="fim-sub">Parabéns a todos os exploradores!</p>
+    <div class="ranking-final" id="ranking-final"></div>
+    <div class="fim-botoes">
+      <button class="btn-primario" onclick="mostrarTela('tela-menu')">🏠 Menu Principal</button>
+      <button class="btn-contorno" onclick="reiniciarJogo()">🔄 Jogar Novamente</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL CONFIRMAÇÃO -->
-<div class="modal-bg" id="modal-bg" onclick="closeModal()">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="modal-ico">⚠️</div>
+
+<!-- ═══════════════════════ OVERLAYS GLOBAIS ═══════════════════════ -->
+
+<!-- Modal de confirmação -->
+<div class="fundo-modal" id="modal-confirmar" onclick="fecharModal()">
+  <div class="modal-caixa" onclick="event.stopPropagation()">
+    <div class="modal-icone">⚠️</div>
     <h3>Voltar ao Menu?</h3>
-    <p>O progresso da partida atual será perdido.</p>
-    <div class="modal-btns">
-      <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
-      <button class="btn-danger-sm" onclick="doGoMenu()" style="padding:8px 20px">Confirmar</button>
+    <p>O progresso da partida será perdido.</p>
+    <div class="modal-botoes">
+      <button class="btn-contorno" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-perigo" onclick="confirmarMenu()" style="padding:8px 20px">Confirmar</button>
     </div>
   </div>
 </div>
 
-<!-- FEEDBACK PÓS-RESPOSTA -->
-<div class="feedback-wrap" id="feedback-wrap">
+<!-- Feedback flutuante (não cobre o mapa) -->
+<div class="feedback-flutuante" id="feedback-flutuante">
   <div class="feedback-card" id="feedback-card">
-    <div class="fb-icon" id="fb-icon"></div>
-    <div class="fb-title" id="fb-title"></div>
-    <div class="fb-body" id="fb-body"></div>
-    <div class="fb-fact" id="fb-fact"></div>
+    <div class="feedback-icone" id="feedback-icone"></div>
+    <div class="feedback-titulo" id="feedback-titulo"></div>
+    <div class="feedback-corpo" id="feedback-corpo"></div>
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="game.js"></script>
+
+<!-- ═══════════════════════ CRÉDITOS ═══════════════════════ -->
+<div class="creditos-rodape">
+  <span>© 2026 Explorador Mundial · Desenvolvido por <strong>Otávio Neto</strong></span>
+  <div class="creditos-links">
+    <a href="https://github.com/OtavioNetoDev" target="_blank" rel="noopener" title="GitHub">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a href="https://instagram.com/euotavioneto_" target="_blank" rel="noopener" title="Instagram">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+      Instagram
+    </a>
+    <a href="https://www.linkedin.com/in/otavionetodev/" target="_blank" rel="noopener" title="LinkedIn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+  </div>
+</div>
+
 </body>
 </html>
